@@ -1,8 +1,12 @@
 name: "AllowTransferSM-${self:service}-${opt:stage}"
 definition:
   Comment: Check allowance for an user account.
-  StartAt: CheckRequiredBalance
+  StartAt: WaitInitialState
   States:
+    WaitInitialState:
+       Type: Wait
+       Seconds: 3
+       Next: CheckRequiredBalance
     CheckRequiredBalance:
       Type: Task
       Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkRequiredBalance"
