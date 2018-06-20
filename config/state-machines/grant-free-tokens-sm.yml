@@ -1,12 +1,8 @@
 name: "GrantFreeTokensSM-${self:service}-${opt:stage}"
 definition:
   Comment: Grants free tokens to a new user
-  StartAt: WaitInitialState
+  StartAt: GrantFreeTokens
   States:
-    WaitInitialState:
-      Type: Wait
-      Seconds: 5
-      Next: GrantFreeTokens
     ChoiceState:
       Type: Choice
       Choices:
