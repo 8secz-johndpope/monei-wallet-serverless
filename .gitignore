@@ -1,0 +1,7 @@
+node_modules
+.serverless
+.idea/
+.env
+package
+coverage
+/cf-output.yaml

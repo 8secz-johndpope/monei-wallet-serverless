@@ -1,0 +1,26 @@
+name: "CheckTransactionSM-${self:service}-${opt:stage}"
+definition:
+  Comment: Checks transaction status, notifies users and updates it in dynamoDB
+  StartAt: WaitState
+  States:
+    ChoiceState:
+      Type: Choice
+      Choices:
+      - Variable: "$.status"
+        StringEquals: pending
+        Next: WaitState
+      - Not:
+          Variable: "$.status"
+          StringEquals: pending
+        Next: EndState
+    WaitState:
+      Type: Wait
+      Seconds: 10
+      Next: CheckTransactionState
+    CheckTransactionState:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkTransaction"
+      Next: ChoiceState
+    EndState:
+      Type: Pass
+      End: true

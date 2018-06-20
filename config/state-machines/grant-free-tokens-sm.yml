@@ -1,0 +1,34 @@
+name: "GrantFreeTokensSM-${self:service}-${opt:stage}"
+definition:
+  Comment: Grants free tokens to a new user
+  StartAt: WaitInitialState
+  States:
+    WaitInitialState:
+      Type: Wait
+      Seconds: 5
+      Next: GrantFreeTokens
+    ChoiceState:
+      Type: Choice
+      Choices:
+      - Variable: "$.status"
+        StringEquals: pending
+        Next: WaitTransactionState
+      - Not:
+          Variable: "$.status"
+          StringEquals: pending
+        Next: EndState
+    GrantFreeTokens:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-grantFreeTokens"
+      Next: WaitTransactionState
+    WaitTransactionState:
+      Type: Wait
+      Seconds: 10
+      Next: CheckTransactionState
+    CheckTransactionState:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkTransaction"
+      Next: ChoiceState
+    EndState:
+      Type: Pass
+      End: true

@@ -1,0 +1,44 @@
+Type: AWS::DynamoDB::Table
+DeletionPolicy: Retain
+Properties:
+  TableName: ${self:custom.transactionsTable}
+  AttributeDefinitions:
+    - AttributeName: id
+      AttributeType: S
+    - AttributeName: to
+      AttributeType: S
+    - AttributeName: from
+      AttributeType: S
+    - AttributeName: createdAt
+      AttributeType: N
+  KeySchema:
+    - AttributeName: id
+      KeyType: HASH
+  ProvisionedThroughput:
+    ReadCapacityUnits: 1
+    WriteCapacityUnits: 1
+  GlobalSecondaryIndexes:
+  - IndexName: to-index
+    KeySchema:
+    - AttributeName: to
+      KeyType: HASH
+    - AttributeName: createdAt
+      KeyType: RANGE
+    Projection:
+      ProjectionType: ALL
+    ProvisionedThroughput:
+      ReadCapacityUnits: 1
+      WriteCapacityUnits: 1
+  - IndexName: from-index
+    KeySchema:
+    - AttributeName: from
+      KeyType: HASH
+    - AttributeName: createdAt
+      KeyType: RANGE
+    Projection:
+      ProjectionType: ALL
+    ProvisionedThroughput:
+      ReadCapacityUnits: 1
+      WriteCapacityUnits: 1
+  StreamSpecification:
+    StreamViewType: NEW_AND_OLD_IMAGES

@@ -1,0 +1,10 @@
+{
+  "version": "2017-02-28",
+  "payload": {
+    "id": "$!{context.identity.sub}",
+    "name": "$!{context.identity.name}",
+    "email": "$!{context.identity.claims.email}",
+    "phoneNumber": "$!{context.identity.claims.phone_number}",
+    "address": "$!{context.identity.claims['custom:eth_address']}"
+  }
+}

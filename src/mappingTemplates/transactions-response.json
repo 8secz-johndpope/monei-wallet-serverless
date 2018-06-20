@@ -1,0 +1,12 @@
+{
+	#set($items = [])
+  #foreach($entry in $context.result.hits.hits)
+    #set($item = $entry.get("_source"))
+    #if($item.to == $context.identity.claims['custom:eth_address'])
+      #set($item.income = true)
+    #end
+    $util.qr($items.add($item))
+  #end
+  "items": $util.toJson($items),
+  "total": $context.result.hits.total
+}

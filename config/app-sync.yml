@@ -1,0 +1,64 @@
+name: ${self:custom.resourcesPrefix}-graphQL
+mappingTemplatesLocation: src/mappingTemplates
+authenticationType: AMAZON_COGNITO_USER_POOLS
+serviceRole: ${self:custom.resourcesPrefix}-AppSyncServiceRole
+userPoolConfig:
+  awsRegion: ${self:custom.config.REGION}
+  defaultAction: ALLOW
+  userPoolId: ${self:resources.Outputs.UserPoolId.Value}
+mappingTemplates:
+  - dataSource: balanceResolver
+    type: User
+    field: balance
+    request: "lambda-request.json"
+    response: "response.json"
+
+  - dataSource: newTransaction
+    type: Mutation
+    field: newTransaction
+    request: "lambda-request.json"
+    response: "response.json"
+
+  - dataSource: elasticSearch
+    type: Query
+    field: transactions
+    request: "transactions-request.json"
+    response: "transactions-response.json"
+
+  - dataSource: passThrough
+    type: Query
+    field: user
+    request: "user-request.json"
+    response: "response.json"
+
+schema: src/schema.graphql
+
+dataSources:
+  - type: NONE
+    name: passThrough
+    config: {}
+
+  - type: AWS_LAMBDA
+    name: balanceResolver
+    config:
+      lambdaFunctionArn: { Fn::GetAtt: ['GetBalanceLambdaFunction', 'Arn'] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+
+  - type: AWS_LAMBDA
+    name: newTransaction
+    config:
+      lambdaFunctionArn: { Fn::GetAtt: ['NewTransactionLambdaFunction', 'Arn'] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+
+  - type: AMAZON_DYNAMODB
+    name: transactionsTable
+    config:
+      tableName: { Ref: TransactionsTable }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncDynamoDBServiceRole', 'Arn'] }
+
+  - type: AMAZON_ELASTICSEARCH
+    name: elasticSearch
+    description: 'ElasticSearch'
+    config:
+      endpoint: { "Fn::Join": ["", ["https://", { Fn::GetAtt: [ 'ElasticSearchIndex', 'DomainEndpoint' ] }]] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncESServiceRole', 'Arn'] }

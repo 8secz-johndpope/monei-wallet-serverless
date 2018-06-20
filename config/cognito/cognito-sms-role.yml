@@ -1,0 +1,21 @@
+Type: AWS::IAM::Role
+Properties:
+  RoleName: ${self:custom.resourcesPrefix}-cognito-SMSRole
+  AssumeRolePolicyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: cognito-idp.amazonaws.com
+        Action: sts:AssumeRole
+        Condition:
+          StringEquals:
+            sts:ExternalId: a0a4cd6c-58ba-43a2-8834-ef12b2d213c7
+  Policies:
+    - PolicyName: ${self:custom.resourcesPrefix}-cognito-SMSPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action: sns:publish
+            Resource: "*"

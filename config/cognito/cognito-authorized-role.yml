@@ -1,0 +1,38 @@
+Type: AWS::IAM::Role
+Properties:
+  AssumeRolePolicyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Federated: "cognito-identity.amazonaws.com"
+        Action:
+          - "sts:AssumeRoleWithWebIdentity"
+        Condition:
+          StringEquals:
+            "cognito-identity.amazonaws.com:aud": { Ref: IdentityPool }
+          "ForAnyValue:StringLike":
+            "cognito-identity.amazonaws.com:amr": authenticated
+  Policies:
+    - PolicyName: ${self:custom.resourcesPrefix}-cognitoAuthorizedPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "mobileanalytics:PutEvents"
+              - "cognito-sync:*"
+              - "cognito-identity:*"
+              - "iot:DescribeEndpoint"
+              - "iot:Receive"
+              - "iot:Subscribe"
+              - "iot:GetTopicRule"
+              - "iot:Connect"
+              - "iot:DescribeCertificate"
+              - "iot:GetPolicyVersion"
+              - "execute-api:Invoke"
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - "lambda:InvokeFunction"
+            Resource: "*"

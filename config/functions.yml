@@ -1,0 +1,113 @@
+checkTransaction:
+  handler: src/steps/checkTransaction.handler
+  iamRoleStatements:
+    - Effect: Allow
+      Action: iot:Publish
+      Resource: "*"
+    - Effect: Allow
+      Action: dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
+
+checkRequiredBalance:
+  handler: src/steps/checkRequiredBalance.handler
+  iamRoleStatements:
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
+
+checkTransactionStatus:
+  handler: src/steps/checkTransactionStatus.handler
+  iamRoleStatements: []
+
+approveTransaction:
+  handler: src/steps/approveTransaction.handler
+  iamRoleStatements:
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.ENCRYPT_PASSWORD_KEY}-*"
+
+grantFreeTokens:
+  handler: src/steps/grantFreeTokens.handler
+  iamRoleStatements:
+    - Effect: Allow
+      Action: iot:Publish
+      Resource: "*"
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
+    - Effect: Allow
+      Action: dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
+
+postAuthentication:
+  handler: src/hooks/postAuthentication.handler
+  iamRoleStatements:
+    - Effect: Allow
+      Action: cognito-idp:AdminUpdateUserAttributes
+      Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.ENCRYPT_PASSWORD_KEY}-*"
+    - Effect: Allow
+      Action: states:StartExecution
+      Resource: ${self:resources.Outputs.GrantFreeTokensSM.Value}
+    - Effect: Allow
+      Action: states:StartExecution
+      Resource: ${self:resources.Outputs.AllowTransferSM.Value}
+
+getBalance:
+  handler: src/resolvers/getBalance.handler
+  iamRoleStatements: []
+
+newTransaction:
+  handler: src/resolvers/newTransaction.handler
+  iamRoleStatements:
+    - Effect: Allow
+      Action: cognito-idp:ListUsers
+      Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
+    - Effect: Allow
+      Action: iot:Publish
+      Resource: "*"
+    - Effect: Allow
+      Action: states:StartExecution
+      Resource: ${self:resources.Outputs.CheckTransactionSM.Value}
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
+    - Effect: Allow
+      Action: dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
+
+attachUserPolicy:
+  handler: src/hooks/attachUserPolicy.handler
+  events:
+    - http:
+        path: attach_policy
+        method: post
+        cors: true
+        authorizer: aws_iam
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - iot:AttachPrincipalPolicy
+        - iot:DetachPrincipalPolicy
+        - iot:CreatePolicy
+      Resource: "*"
+
+indexTransactions:
+  handler: src/hooks/indexTransactions.handler
+  events:
+    - stream:
+        type: dynamodb
+        startingPosition: LATEST
+        arn: { Fn::GetAtt: [ 'TransactionsTable', 'StreamArn' ] }
+        batchSize: 1
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-indexTransactionsIAM
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - es:ESHttpPost
+        - es:ESHttpDelete
+        - es:ESHttpPut
+        - es:ESHttpHead
+      Resource: "*"

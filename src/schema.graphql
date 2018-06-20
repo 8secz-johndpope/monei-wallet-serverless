@@ -1,0 +1,47 @@
+type User {
+    id: String!
+    name: String!
+    email: String!
+    phoneNumber: String!
+    address: String!
+    balance: Int!
+}
+
+type Transactions {
+    items: [Transaction!]!
+    total: Int
+}
+
+type Transaction {
+    id: String!
+    createdAt: Long!
+    updatedAt: Long!
+    from: String!
+    to: String!
+    status: String!
+    amount: Int!
+    fromInfo: String
+    toInfo: String
+    note: String
+    income: Boolean
+}
+
+type Query {
+    user: User!
+    transactions(size: Int, from: Int): Transactions
+}
+
+type Mutation {
+    newTransaction(
+        amount: Int!
+        ethAddress: String
+        phoneNumber: String
+        email: String
+        note: String
+    ): Transaction!
+}
+
+schema {
+    query: Query
+    mutation: Mutation
+}

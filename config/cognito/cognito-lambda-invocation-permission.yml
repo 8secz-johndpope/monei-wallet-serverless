@@ -1,0 +1,6 @@
+Type: AWS::Lambda::Permission
+Properties:
+  Action: lambda:InvokeFunction
+  FunctionName: { Fn::GetAtt: ['PostAuthenticationLambdaFunction', 'Arn'] }
+  Principal: cognito-idp.amazonaws.com
+  SourceArn:  { Fn::GetAtt: ['UserPool', 'Arn'] }

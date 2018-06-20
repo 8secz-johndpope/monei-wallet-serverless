@@ -1,0 +1,14 @@
+Type: AWS::Cognito::UserPoolClient
+Properties:
+  ClientName: ${self:custom.resourcesPrefix}-userPoolClient
+  GenerateSecret: false
+  UserPoolId: { Ref: UserPool }
+  ReadAttributes:
+    - email
+    - name
+    - phone_number
+    - custom:eth_address
+  WriteAttributes:
+    - email
+    - name
+    - phone_number

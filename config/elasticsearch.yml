@@ -1,0 +1,13 @@
+Type: AWS::Elasticsearch::Domain
+Properties:
+  DomainName: ${self:custom.elasticsearchDomain}
+  EBSOptions:
+    EBSEnabled: true
+    VolumeType: ${self:custom.config.ES_VOLUME_TYPE}
+    VolumeSize: ${self:custom.config.ES_VOLUME_SIZE}
+  ElasticsearchClusterConfig:
+    InstanceType: ${self:custom.config.ES_INSTANCE_TYPE}
+    InstanceCount: ${self:custom.config.ES_INSTANCE_COUNT}
+    DedicatedMasterEnabled: false
+    ZoneAwarenessEnabled: false
+  ElasticsearchVersion: 6.2

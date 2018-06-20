@@ -1,0 +1,64 @@
+name: "AllowTransferSM-${self:service}-${opt:stage}"
+definition:
+  Comment: Check allowance for an user account.
+  StartAt: CheckRequiredBalance
+  States:
+    CheckRequiredBalance:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkRequiredBalance"
+      Next: ChoiceAllowanceTotalSupply
+    ChoiceAllowanceTotalSupply:
+      Type: Choice
+      Choices:
+        - Variable: "$.status"
+          StringEquals: alreadyAllowed
+          Next: EndState
+        - Variable: "$.status"
+          StringEquals: waitTransaction
+          Next: WaitTransactionState
+        - Variable: "$.status"
+          StringEquals: approve
+          Next: ApproveState
+    ApproveState:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-approveTransaction"
+      Next: WaitApproveState
+    WaitTransactionState:
+      Type: Wait
+      Seconds: 10
+      Next: CheckTransactionState
+    CheckTransactionState:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkTransactionStatus"
+      Next: ChoiceAllowTransaction
+    ChoiceAllowTransaction:
+      Type: Choice
+      Choices:
+        - Variable: "$.status"
+          StringEquals: waitTransaction
+          Next: WaitTransactionState
+        - Not:
+            Variable: "$.status"
+            StringEquals: waitTransaction
+          Next: ApproveState
+    WaitApproveState:
+      Type: Wait
+      Seconds: 10
+      Next: CheckApproveState
+    CheckApproveState:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkTransactionStatus"
+      Next: ChoiceApproveState
+    ChoiceApproveState:
+      Type: Choice
+      Choices:
+        - Variable: "$.status"
+          StringEquals: pending
+          Next: WaitApproveState
+        - Not:
+            Variable: "$.status"
+            StringEquals: pending
+          Next: EndState
+    EndState:
+      Type: Pass
+      End: true

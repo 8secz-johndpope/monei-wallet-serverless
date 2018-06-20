@@ -1,0 +1,11 @@
+{
+  "extends": ["microapps"],
+  "parserOptions":{
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "rules": {
+    "no-console": 0
+  }
+}

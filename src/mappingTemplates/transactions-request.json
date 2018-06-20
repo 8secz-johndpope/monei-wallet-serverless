@@ -1,0 +1,18 @@
+{
+  "version":"2017-02-28",
+  "operation":"GET",
+  "path":"/transactions/_search",
+  "params":{
+    "body":{
+      "from": #if($context.arguments.from) $context.arguments.from #else 0 #end,
+      "size": #if($context.arguments.size) $context.arguments.size #else 25 #end,
+      "query" : {
+        "multi_match" : {
+          "query": "$context.identity.claims['custom:eth_address']",
+          "fields": ["to", "from"]
+        }
+      },
+      "sort": { "createdAt": { "order": "desc" }}
+    }
+  }
+}

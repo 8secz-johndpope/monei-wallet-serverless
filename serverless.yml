@@ -1,0 +1,197 @@
+service: moneiwallet
+
+#package:
+#  artifact: package/package.zip
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-plugin-stage-variables
+  - serverless-pseudo-parameters
+  - serverless-step-functions
+  - serverless-stack-output
+  - serverless-appsync-plugin
+  - serverless-iam-roles-per-function
+
+package:
+  exclude:
+    - node_modules/aws-sdk
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ${self:custom.config.REGION}
+  stage: ${self:custom.currentStage}
+  environment:
+    SLS_REGION: ${self:custom.config.REGION}
+    TRANSACTIONS_TABLE: ${self:custom.transactionsTable}
+    MNEMONIC_KEY: ${self:custom.config.MNEMONIC_KEY}
+    ENCRYPT_PASSWORD_KEY: ${self:custom.config.ENCRYPT_PASSWORD_KEY}
+    TOKEN_ADDRESS: ${self:custom.config.TOKEN_ADDRESS}
+    MASTER_ADDRESS: ${self:custom.config.MASTER_ADDRESS}
+    IOT_ENDPOINT: ${self:custom.config.IOT_ENDPOINT}
+    CHECK_TRANSACTIN_SM: ${self:resources.Outputs.CheckTransactionSM.Value}
+    ALLOW_TRANSFER_SM: ${self:resources.Outputs.AllowTransferSM.Value}
+    GRANT_FREE_TOKENS_SM: ${self:resources.Outputs.GrantFreeTokensSM.Value}
+    USER_POOL_ID: ${self:resources.Outputs.UserPoolId.Value}
+    USER_NOTIFICATIONS_POLICY: ${self:custom.resourcesPrefix}-UserNotificationsPolicy
+    INFURA_URL: ${self:custom.config.INFURA_URL}
+    ELASTICSEARCH: ${self:resources.Outputs.ElasticSearchIndexDomain.Value}
+  timeout: 10
+  cfLogs: true
+
+custom:
+  defaultStage: develop
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  transactionsTable: ${self:custom.resourcesPrefix}-Transactions
+  config: ${file(./config.${self:custom.currentStage}.yml)}
+  elasticsearchDomain: ${self:provider.stage}-${self:service}
+
+  pseudoParameters:
+    skipRegionReplace: true
+
+  appSync: ${file(./config/app-sync.yml)}
+
+  output:
+    handler: scripts/output.handler
+
+functions: ${file(./config/functions.yml)}
+
+stepFunctions:
+  stateMachines:
+    AllowTransferSM: ${file(./config/state-machines/allow-transfer-sm.yml)}
+    CheckTransactionSM: ${file(./config/state-machines/check-transaction-sm.yml)}
+    GrantFreeTokensSM: ${file(./config/state-machines/grant-free-tokens-sm.yml)}
+
+resources:
+  Resources:
+    TransactionsTable: ${file(./config/dynamodb/transactions.yml)}
+    UserPool: ${file(./config/cognito/user-pool.yml)}
+    UserPoolClient: ${file(./config/cognito/user-pool-client.yml)}
+    IdentityPool: ${file(./config/cognito/identity-pool.yml)}
+    CognitoLambdaInvocationPermission: ${file(./config/cognito/cognito-lambda-invocation-permission.yml)}
+    CognitoAuthorizedRole: ${file(./config/cognito/cognito-authorized-role.yml)}
+    CognitoSMSRole: ${file(./config/cognito/cognito-sms-role.yml)}
+    IdentityPoolRoleMapping: ${file(./config/cognito/identity-pool-role-mapping.yml)}
+    ElasticSearchIndex: ${file(./config/elasticsearch.yml)}
+
+    UserNotificationsPolicy:
+      Type: AWS::IoT::Policy
+      Properties:
+        PolicyName: ${self:custom.resourcesPrefix}-UserNotificationsPolicy
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+              - "iot:*"
+            Resource: "*"
+
+    AppSyncLambdaServiceRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:custom.resourcesPrefix}-lambda-AppSyncServiceRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: appsync.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:custom.resourcesPrefix}-lambda-AppSyncServicePolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action: lambda:invokeFunction
+                  Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:*"
+
+    AppSyncDynamoDBServiceRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:custom.resourcesPrefix}-dynamo-AppSyncServiceRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: appsync.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:custom.resourcesPrefix}-dynamo-AppSyncServicePolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:Query
+                    - dynamodb:Scan
+                    - dynamodb:GetItem
+                    - dynamodb:PutItem
+                    - dynamodb:UpdateItem
+                    - dynamodb:DeleteItem
+                    - dynamodb:BatchWriteItem
+                    - dynamodb:BatchGetItem
+                  Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
+                - Effect: Allow
+                  Action:
+                    - dynamodb:Query
+                    - dynamodb:Scan
+                  Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}/index/*"
+
+    AppSyncESServiceRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:custom.resourcesPrefix}-es-AppSyncServiceRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: appsync.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:custom.resourcesPrefix}-es-AppSyncServicePolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - es:ESHttpDelete
+                    - es:ESHttpHead
+                    - es:ESHttpGet
+                    - es:ESHttpPost
+                    - es:ESHttpPut
+                  Resource:  "arn:aws:es:#{AWS::Region}:#{AWS::AccountId}:domain/${self:custom.elasticsearchDomain}/*"
+
+
+  Outputs:
+    AllowTransferSM:
+      Value: {Ref: "AllowTransferSMDash${self:service}Dash${opt:stage}"}
+
+    GrantFreeTokensSM:
+      Value: {Ref: "GrantFreeTokensSMDash${self:service}Dash${opt:stage}"}
+
+    CheckTransactionSM:
+      Value: {Ref: "CheckTransactionSMDash${self:service}Dash${opt:stage}" }
+
+    UserPoolId:
+      Value: { Ref: UserPool }
+
+    UserPoolClientId:
+      Value: { Ref: UserPoolClient }
+
+    IdentityPoolId:
+      Value: { Ref: IdentityPool }
+
+    ElasticSearchIndex:
+      Value: { Ref: "ElasticSearchIndex" }
+
+    ElasticSearchIndexARN:
+      Value: "arn:aws:es:#{AWS::Region}:#{AWS::AccountId}:domain/${opt:stage}-${self:service}"
+
+    ElasticSearchIndexDomain:
+      Value: { Fn::GetAtt: [ 'ElasticSearchIndex', 'DomainEndpoint' ] }
+
