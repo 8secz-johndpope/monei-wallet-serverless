@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/MONEI/monei-wallet-serverless.svg?branch=master)](https://travis-ci.org/MONEI/monei-wallet-serverless)
 
-Serverless back-end for MONEI Wallet
+Serverless back-end for MONEI Wallet  
 User interface can be found here - [monei-wallet-ui](https://github.com/MONEI/monei-wallet-ui)
 
 ## Configuration
