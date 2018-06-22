@@ -5,6 +5,26 @@
 Serverless back-end for MONEI Wallet
 User interface can be found here - [monei-wallet-ui](https://github.com/MONEI/monei-wallet-ui)
 
+## Configuration
+Change [config.develop.yml](config.develop.yml) to reflect your configurations
+
+#### Basic config
+
+- `REGION` - aws region
+- `INFURA_URL` - url to access [infura.io](https://infura.io/)
+- `TOKEN_ADDRESS` - address of your ERC20 token
+- `MASTER_ADDRESS` - address of the owner of your ERC20 token
+- `MNEMONIC_KEY` - a key in AWS Secret Manager that hold mnemonic phrase to initialize master account
+- `ENCRYPT_PASSWORD_KEY` - a key in AWS Secret Manager that holds a password to encrypt user wallets
+- `IOT_ENDPOINT` - AWS Iot endpoint. Run `aws iot describe-endpoint` to generate it
+
+#### Elastic search instance config
+- `ES_INSTANCE_TYPE`: t2.small.elasticsearch
+- `ES_INSTANCE_COUNT`: 1
+- `ES_VOLUME_TYPE`: gp2
+- `ES_VOLUME_SIZE`: 10
+
+
 ## Setup and deployment
 
 - `docker-compose up`
