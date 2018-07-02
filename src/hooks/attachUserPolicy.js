@@ -16,11 +16,11 @@ module.exports.handler = async event => {
         policyName: process.env.USER_NOTIFICATIONS_POLICY
       })
       .promise();
-    return success('Policy attached');
+    return success({message: 'Policy attached'});
   } catch (error) {
     if (error.statusCode === 409) {
       // Policy already exists for this cognito identity
-      return success('Policy already attached');
+      return success({message: 'Policy already attached'});
     } else {
       return fail(error);
     }

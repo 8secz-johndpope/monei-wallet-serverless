@@ -32,7 +32,7 @@ describe('attachUserPolicy', () => {
     });
     expect(result.statusCode).toBe(200);
     expect(result.headers).toEqual(requiredHeaders);
-    expect(result.body).toBe('Policy attached');
+    expect(result.body).toBe(JSON.stringify({message: 'Policy attached'}));
   });
 
   it('should return success if policy already attached', async () => {
@@ -40,7 +40,7 @@ describe('attachUserPolicy', () => {
     const result = await attachUserPolicy(mockEvent);
     expect(result.statusCode).toBe(200);
     expect(result.headers).toEqual(requiredHeaders);
-    expect(result.body).toBe('Policy already attached');
+    expect(result.body).toBe(JSON.stringify({message: 'Policy already attached'}));
   });
 
   it('should return error if attachPrincipalPolicy fails', async () => {

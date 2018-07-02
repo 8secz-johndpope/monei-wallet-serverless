@@ -10,11 +10,13 @@ const DEFAULT_HEADERS = {
  * @param headers
  * @returns {{statusCode: number, headers: {'Access-Control-Allow-Origin': string, 'Access-Control-Allow-Credentials': boolean}, body: string}}
  */
-exports.response = (body, {statusCode = 500, headers} = {}) => ({
+const response = (body, {statusCode = 500, headers} = {}) => ({
   statusCode,
   headers: {...DEFAULT_HEADERS, ...headers},
   body: JSON.stringify(body)
 });
+
+exports.respinse = response;
 
 exports.success = (body, {statusCode = 200, headers} = {}) => response(body, {statusCode, headers});
 
