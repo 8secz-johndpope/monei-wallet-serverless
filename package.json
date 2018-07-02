@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/handler.js",
+  "engines": {
+    "node": "8.10.0"
+  },
+  "os": [
+    "linux"
+  ],
   "scripts": {
     "start": "serverless offline start --host 0.0.0.0 --migrate",
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' src --fix",
