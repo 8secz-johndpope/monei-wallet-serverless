@@ -26,6 +26,7 @@ provider:
     SLS_REGION: ${self:custom.config.REGION}
     TRANSACTIONS_TABLE: ${self:custom.transactionsTable}
     MNEMONIC_KEY: ${self:custom.config.MNEMONIC_KEY}
+    MONEI_CREDENTIALS_KEY: ${self:custom.config.MONEI_CREDENTIALS_KEY}
     ENCRYPT_PASSWORD_KEY: ${self:custom.config.ENCRYPT_PASSWORD_KEY}
     TOKEN_ADDRESS: ${self:custom.config.TOKEN_ADDRESS}
     MASTER_ADDRESS: ${self:custom.config.MASTER_ADDRESS}
@@ -37,6 +38,8 @@ provider:
     USER_NOTIFICATIONS_POLICY: ${self:custom.resourcesPrefix}-UserNotificationsPolicy
     INFURA_URL: ${self:custom.config.INFURA_URL}
     ELASTICSEARCH: ${self:resources.Outputs.ElasticSearchIndexDomain.Value}
+    API_ENDPOINT: ${self:custom.apiEndpoint}
+
   timeout: 10
   cfLogs: true
 
@@ -47,6 +50,12 @@ custom:
   transactionsTable: ${self:custom.resourcesPrefix}-Transactions
   config: ${file(./config.${self:custom.currentStage}.yml)}
   elasticsearchDomain: ${self:provider.stage}-${self:service}
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - { Ref : ApiGatewayRestApi }
+        - ".execute-api.${self:custom.config.REGION}.amazonaws.com/${self:custom.currentStage}"
 
   pseudoParameters:
     skipRegionReplace: true
