@@ -19,3 +19,10 @@ exports.response = (body, {statusCode = 500, headers} = {}) => ({
 exports.success = (body, {statusCode = 200, headers} = {}) => response(body, {statusCode, headers});
 
 exports.fail = error => response(error, {statusCode: error.statusCode});
+
+exports.redirect = url => ({
+  statusCode: 302,
+  headers: {
+    Location: url
+  }
+});
