@@ -25,6 +25,7 @@ exports.fail = error => response(error, {statusCode: error.statusCode});
 exports.redirect = url => ({
   statusCode: 302,
   headers: {
+    ...DEFAULT_HEADERS,
     Location: url
   }
 });

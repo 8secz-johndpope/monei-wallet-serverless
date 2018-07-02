@@ -78,6 +78,13 @@ newTransaction:
       Action: dynamodb:PutItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
+prepareCheckout:
+  handler: src/resolvers/prepareCheckout.handler
+  iamRoleStatements:
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
+
 attachUserPolicy:
   handler: src/hooks/attachUserPolicy.handler
   events:
@@ -93,19 +100,6 @@ attachUserPolicy:
         - iot:DetachPrincipalPolicy
         - iot:CreatePolicy
       Resource: "*"
-
-prepareCheckout:
-  handler: src/hooks/prepareCheckout.handler
-  events:
-    - http:
-        path: prepare_checkout
-        method: post
-        cors: true
-        authorizer: aws_iam
-  iamRoleStatements:
-    - Effect: Allow
-      Action: secretsmanager:GetSecretValue
-      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
 
 indexTransactions:
   handler: src/hooks/indexTransactions.handler
