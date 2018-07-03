@@ -3,14 +3,17 @@ const qs = require('qs');
 const {getSecretValue} = require('../services/secrets');
 
 module.exports.handler = async event => {
-  console.log(JSON.stringify(event, null, 2));
   const amount = (event.arguments.amount / 100).toFixed(2);
   const credentials = await getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
   const data = {
     authentication: JSON.parse(credentials),
     amount,
     currency: 'EUR',
-    paymentType: 'DB'
+    paymentType: 'DB',
+    customer: {
+      merchantCustomerId: event.identity.claims['custom:eth_address'],
+      phone: event.identity.claims['phone_number']
+    }
   };
   const options = {
     method: 'POST',

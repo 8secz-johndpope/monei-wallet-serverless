@@ -2,19 +2,11 @@ const {withMasterAccount} = require('../services/etherium');
 const {notifyTrxCreated} = require('../services/userNotifier');
 const Transaction = require('../models/Transaction');
 
-// tokens stored in the contract as integers, so amount = value * 10 ** decimals
-const FREE_TOKENS_AMOUNT = 200;
-
-/**
- * Grants free tokens to a new address
- * @param account: <{address: String}> - user account containing address
- * @returns {Promise<Object>} - returns a promise with transaction object
- */
-module.exports.handler = async account => {
+module.exports.handler = async ({address, amount, note}) => {
   const {token, masterAddress} = await withMasterAccount();
 
   // create a transaction to transfer tokens
-  const tokenTransaction = token.methods.transfer(account.address, FREE_TOKENS_AMOUNT);
+  const tokenTransaction = token.methods.transfer(address, amount);
 
   // estimate transaction gas
   const gasNeeded = await tokenTransaction.estimateGas({
@@ -30,9 +22,9 @@ module.exports.handler = async account => {
         id: hash,
         from: masterAddress,
         fromInfo: 'MONEI',
-        to: account.address,
-        amount: FREE_TOKENS_AMOUNT,
-        note: 'Free coins to start right away!'
+        to: address,
+        amount,
+        note
       }).then(resolve, reject);
     });
   });

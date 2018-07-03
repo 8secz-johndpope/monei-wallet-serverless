@@ -5,6 +5,9 @@ const AWS = require('aws-sdk');
 const provider = new AWS.CognitoIdentityServiceProvider();
 const stepFunctions = new AWS.StepFunctions();
 
+// tokens stored in the contract as integers, so amount = value * 10 ** decimals
+const FREE_TOKENS_AMOUNT = 200;
+
 /**
  * A hook that is triggered by cognito PostAuthentication and PostConfirmation events
  * @param event
@@ -69,11 +72,15 @@ module.exports.handler = async event => {
   // update eth address and secret key in cognito for a new user
   await provider.adminUpdateUserAttributes(params).promise();
 
-  // start grant free tokens state machine
+  // start transfer tokens state machine to grant new user free tokens
   const grantFreeTokens = stepFunctions
     .startExecution({
-      stateMachineArn: process.env.GRANT_FREE_TOKENS_SM,
-      input: JSON.stringify({address: account.address})
+      stateMachineArn: process.env.TRANSFER_TOKENS_SM,
+      input: JSON.stringify({
+        address: account.address,
+        amount: FREE_TOKENS_AMOUNT,
+        note: 'Free coins to start right away!'
+      })
     })
     .promise();
 

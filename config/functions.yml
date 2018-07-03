@@ -26,8 +26,8 @@ approveTransaction:
       Action: secretsmanager:GetSecretValue
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.ENCRYPT_PASSWORD_KEY}-*"
 
-grantFreeTokens:
-  handler: src/steps/grantFreeTokens.handler
+transferTokens:
+  handler: src/steps/transferTokens.handler
   iamRoleStatements:
     - Effect: Allow
       Action: iot:Publish
@@ -50,10 +50,9 @@ postAuthentication:
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.ENCRYPT_PASSWORD_KEY}-*"
     - Effect: Allow
       Action: states:StartExecution
-      Resource: ${self:resources.Outputs.GrantFreeTokensSM.Value}
-    - Effect: Allow
-      Action: states:StartExecution
-      Resource: ${self:resources.Outputs.AllowTransferSM.Value}
+      Resource:
+        - ${self:resources.Outputs.TransferTokensSM.Value}
+        - ${self:resources.Outputs.AllowTransferSM.Value}
 
 getBalance:
   handler: src/resolvers/getBalance.handler
@@ -95,7 +94,11 @@ completeCheckout:
   iamRoleStatements:
     - Effect: Allow
       Action: secretsmanager:GetSecretValue
-      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
+      Resource:
+        - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
+    - Effect: Allow
+      Action: states:StartExecution
+      Resource: ${self:resources.Outputs.TransferTokensSM.Value}
 
 attachUserPolicy:
   handler: src/hooks/attachUserPolicy.handler
