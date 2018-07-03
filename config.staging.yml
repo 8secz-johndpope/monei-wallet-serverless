@@ -4,7 +4,7 @@ TOKEN_ADDRESS: "0xdc917bfdf32b41b1a11d0d3a50f201604638639c"
 MASTER_ADDRESS: "0x4af669e4f4422c0d867415ab0784005bf989a992"
 MNEMONIC_KEY: moneiwallet/MNEMONIC
 MONEI_CREDENTIALS_KEY: moneiwallet/MONEI_CREDENTIALS
-MONEI_API_URL: https://oppwa.com
+MONEI_API_URL: https://test.oppwa.com
 ENCRYPT_PASSWORD_KEY: moneiwallet/ENCRYPT_PASSWORD
 IOT_ENDPOINT: a1qrexblodk5ps.iot.eu-west-1.amazonaws.com
 FONTEND_URL: https://monei-wallet.microapps-staging.com
