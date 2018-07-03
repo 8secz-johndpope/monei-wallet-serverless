@@ -96,9 +96,16 @@ completeCheckout:
       Action: secretsmanager:GetSecretValue
       Resource:
         - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
+        - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
     - Effect: Allow
       Action: states:StartExecution
-      Resource: ${self:resources.Outputs.TransferTokensSM.Value}
+      Resource: ${self:resources.Outputs.CheckTransactionSM.Value}
+    - Effect: Allow
+      Action: iot:Publish
+      Resource: "*"
+    - Effect: Allow
+      Action: dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
 attachUserPolicy:
   handler: src/hooks/attachUserPolicy.handler
