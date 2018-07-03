@@ -26,17 +26,22 @@ provider:
     SLS_REGION: ${self:custom.config.REGION}
     TRANSACTIONS_TABLE: ${self:custom.transactionsTable}
     MNEMONIC_KEY: ${self:custom.config.MNEMONIC_KEY}
+    MONEI_CREDENTIALS_KEY: ${self:custom.config.MONEI_CREDENTIALS_KEY}
+    MONEI_API_URL: ${self:custom.config.MONEI_API_URL}
     ENCRYPT_PASSWORD_KEY: ${self:custom.config.ENCRYPT_PASSWORD_KEY}
     TOKEN_ADDRESS: ${self:custom.config.TOKEN_ADDRESS}
     MASTER_ADDRESS: ${self:custom.config.MASTER_ADDRESS}
     IOT_ENDPOINT: ${self:custom.config.IOT_ENDPOINT}
     CHECK_TRANSACTIN_SM: ${self:resources.Outputs.CheckTransactionSM.Value}
     ALLOW_TRANSFER_SM: ${self:resources.Outputs.AllowTransferSM.Value}
-    GRANT_FREE_TOKENS_SM: ${self:resources.Outputs.GrantFreeTokensSM.Value}
+    TRANSFER_TOKENS_SM: ${self:resources.Outputs.TransferTokensSM.Value}
     USER_POOL_ID: ${self:resources.Outputs.UserPoolId.Value}
     USER_NOTIFICATIONS_POLICY: ${self:custom.resourcesPrefix}-UserNotificationsPolicy
     INFURA_URL: ${self:custom.config.INFURA_URL}
     ELASTICSEARCH: ${self:resources.Outputs.ElasticSearchIndexDomain.Value}
+    API_ENDPOINT: ${self:custom.apiEndpoint}
+    FONTEND_URL: ${self:custom.config.FONTEND_URL}
+
   timeout: 10
   cfLogs: true
 
@@ -47,6 +52,12 @@ custom:
   transactionsTable: ${self:custom.resourcesPrefix}-Transactions
   config: ${file(./config.${self:custom.currentStage}.yml)}
   elasticsearchDomain: ${self:provider.stage}-${self:service}
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - { Ref : ApiGatewayRestApi }
+        - ".execute-api.${self:custom.config.REGION}.amazonaws.com/${self:custom.currentStage}"
 
   pseudoParameters:
     skipRegionReplace: true
@@ -62,7 +73,7 @@ stepFunctions:
   stateMachines:
     AllowTransferSM: ${file(./config/state-machines/allow-transfer-sm.yml)}
     CheckTransactionSM: ${file(./config/state-machines/check-transaction-sm.yml)}
-    GrantFreeTokensSM: ${file(./config/state-machines/grant-free-tokens-sm.yml)}
+    TransferTokensSM: ${file(./config/state-machines/transfer-tokens-sm.yml)}
 
 resources:
   Resources:
@@ -171,8 +182,8 @@ resources:
     AllowTransferSM:
       Value: {Ref: "AllowTransferSMDash${self:service}Dash${opt:stage}"}
 
-    GrantFreeTokensSM:
-      Value: {Ref: "GrantFreeTokensSMDash${self:service}Dash${opt:stage}"}
+    TransferTokensSM:
+      Value: {Ref: "TransferTokensSMDash${self:service}Dash${opt:stage}"}
 
     CheckTransactionSM:
       Value: {Ref: "CheckTransactionSMDash${self:service}Dash${opt:stage}" }

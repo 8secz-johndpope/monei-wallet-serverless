@@ -26,6 +26,10 @@ type Transaction {
     income: Boolean
 }
 
+type Checkout {
+    checkoutUrl: String!
+}
+
 type Query {
     user: User!
     transactions(size: Int, from: Int): Transactions
@@ -39,6 +43,7 @@ type Mutation {
         email: String
         note: String
     ): Transaction!
+    prepareCheckout(amount: Int!): Checkout!
 }
 
 schema {

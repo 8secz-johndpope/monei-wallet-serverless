@@ -1,7 +1,7 @@
-name: "GrantFreeTokensSM-${self:service}-${opt:stage}"
+name: "TransferTokensSM-${self:service}-${opt:stage}"
 definition:
   Comment: Grants free tokens to a new user
-  StartAt: GrantFreeTokens
+  StartAt: TransferTokens
   States:
     ChoiceState:
       Type: Choice
@@ -13,9 +13,9 @@ definition:
           Variable: "$.status"
           StringEquals: pending
         Next: EndState
-    GrantFreeTokens:
+    TransferTokens:
       Type: Task
-      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-grantFreeTokens"
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-transferTokens"
       Next: WaitTransactionState
     WaitTransactionState:
       Type: Wait
