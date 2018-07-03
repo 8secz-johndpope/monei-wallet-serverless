@@ -7,6 +7,7 @@ MONEI_CREDENTIALS_KEY: moneiwallet/MONEI_CREDENTIALS
 MONEI_API_URL: https://oppwa.com
 ENCRYPT_PASSWORD_KEY: moneiwallet/ENCRYPT_PASSWORD
 IOT_ENDPOINT: a1qrexblodk5ps.iot.eu-west-1.amazonaws.com
+FONTEND_URL: https://monei-wallet.microapps-staging.com
 
 ES_INSTANCE_TYPE: t2.small.elasticsearch
 ES_INSTANCE_COUNT: 1

@@ -40,6 +40,7 @@ provider:
     INFURA_URL: ${self:custom.config.INFURA_URL}
     ELASTICSEARCH: ${self:resources.Outputs.ElasticSearchIndexDomain.Value}
     API_ENDPOINT: ${self:custom.apiEndpoint}
+    FONTEND_URL: ${self:custom.config.FONTEND_URL}
 
   timeout: 10
   cfLogs: true

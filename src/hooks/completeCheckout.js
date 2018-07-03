@@ -39,9 +39,9 @@ module.exports.handler = async event => {
         })
         .promise();
     }
-    return redirect('http://localhost:4000');
+    return redirect(process.env.FONTEND_URL);
   } catch (e) {
     console.log(e);
-    return redirect('http://localhost:4000');
+    return redirect(process.env.FONTEND_URL);
   }
 };
