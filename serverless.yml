@@ -27,6 +27,7 @@ provider:
     TRANSACTIONS_TABLE: ${self:custom.transactionsTable}
     MNEMONIC_KEY: ${self:custom.config.MNEMONIC_KEY}
     MONEI_CREDENTIALS_KEY: ${self:custom.config.MONEI_CREDENTIALS_KEY}
+    MONEI_API_URL: ${self:custom.config.MONEI_API_URL}
     ENCRYPT_PASSWORD_KEY: ${self:custom.config.ENCRYPT_PASSWORD_KEY}
     TOKEN_ADDRESS: ${self:custom.config.TOKEN_ADDRESS}
     MASTER_ADDRESS: ${self:custom.config.MASTER_ADDRESS}

@@ -16,7 +16,7 @@ module.exports.handler = async event => {
     method: 'POST',
     headers: {'content-type': 'application/x-www-form-urlencoded'},
     data: qs.stringify(data, {allowDots: true}),
-    url: 'https://test.oppwa.com/v1/checkouts'
+    url: process.env.MONEI_API_URL + '/v1/checkouts'
   };
   const res = await axios(options);
   const checkoutId = res.data.id;

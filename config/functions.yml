@@ -85,6 +85,18 @@ prepareCheckout:
       Action: secretsmanager:GetSecretValue
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
 
+completeCheckout:
+  handler: src/hooks/completeCheckout.handler
+  events:
+    - http:
+        path: complete_checkout
+        method: get
+        cors: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
+
 attachUserPolicy:
   handler: src/hooks/attachUserPolicy.handler
   events:
