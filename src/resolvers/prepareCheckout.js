@@ -21,12 +21,18 @@ module.exports.handler = async event => {
     data: qs.stringify(data, {allowDots: true}),
     url: process.env.MONEI_API_URL + '/v1/checkouts'
   };
-  const res = await axios(options);
-  const checkoutId = res.data.id;
-  const query = qs.stringify({
-    checkoutId,
-    redirectUrl: process.env.API_ENDPOINT + '/complete_checkout',
-    test: true
-  });
-  return {checkoutUrl: 'https://payments.monei.net/?' + query};
+
+  try {
+    const res = await axios(options);
+    const checkoutId = res.data.id;
+    const query = qs.stringify({
+      checkoutId,
+      redirectUrl: process.env.API_ENDPOINT + '/complete_checkout',
+      test: true
+    });
+    return {checkoutUrl: 'https://payments.monei.net/?' + query};
+  } catch (error) {
+    if (error.response) return error.response.data;
+    return error;
+  }
 };
