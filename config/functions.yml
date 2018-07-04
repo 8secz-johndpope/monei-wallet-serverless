@@ -101,9 +101,6 @@ completeCheckout:
       Action: states:StartExecution
       Resource: ${self:resources.Outputs.CheckTransactionSM.Value}
     - Effect: Allow
-      Action: iot:Publish
-      Resource: "*"
-    - Effect: Allow
       Action: dynamodb:PutItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
