@@ -1,6 +1,5 @@
 const {withMasterAccount} = require('../services/etherium');
 const Transaction = require('../models/Transaction');
-const {notifyTrxCreated} = require('../services/userNotifier');
 const {normalizeUser} = require('../lib/cognitoUtils');
 const AWS = require('aws-sdk');
 
@@ -115,16 +114,12 @@ module.exports.handler = async event => {
   });
 
   // start a CheckTransactionSM state machine to check transaction status
-  const checkTrxStatus = stepFunctions
+  await stepFunctions
     .startExecution({
       stateMachineArn: process.env.CHECK_TRANSACTIN_SM,
       input: JSON.stringify(trx)
     })
     .promise();
 
-  // notify recipient about new transaction
-  const notifyUser = notifyTrxCreated(trx);
-
-  await Promise.all([checkTrxStatus, notifyUser]);
   return trx;
 };
