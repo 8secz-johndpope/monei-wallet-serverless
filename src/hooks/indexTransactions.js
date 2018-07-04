@@ -1,6 +1,7 @@
 const connectionClass = require('http-aws-es');
 const elasticsearch = require('elasticsearch');
 const attr = require('dynamodb-data-types').AttributeValue;
+const {notifyTrxCreated, notifyTrxUpdated} = require('../services/userNotifier');
 
 const elasticSearch = process.env.ELASTICSEARCH;
 let AWS = require('aws-sdk');
@@ -9,7 +10,7 @@ const credentials = new AWS.EnvironmentCredentials('AWS');
 const esClient = new elasticsearch.Client({
   host: elasticSearch,
   //log: 'trace',
-  connectionClass: connectionClass,
+  connectionClass,
   amazonES: {
     credentials: credentials,
     region: process.env.SLS_REGION
@@ -24,24 +25,31 @@ const esClient = new elasticsearch.Client({
  * @param {*} doc document to be indexed
  */
 const indexDocument = (index, indexType, doc) => {
-  console.log(JSON.stringify(doc.dynamodb.NewImage, null, 2));
+  const body = attr.unwrap(doc.dynamodb.NewImage);
+  console.log(JSON.stringify(body, null, 2));
   switch (doc.eventName) {
     case 'INSERT':
-      return esClient.index({
-        index,
-        type: indexType,
-        id: doc.dynamodb.Keys.id.S,
-        body: attr.unwrap(doc.dynamodb.NewImage)
-      });
+      return Promise.all([
+        notifyTrxCreated(body),
+        esClient.index({
+          index,
+          type: indexType,
+          id: doc.dynamodb.Keys.id.S,
+          body
+        })
+      ]);
     case 'MODIFY':
-      return esClient.update({
-        index,
-        type: indexType,
-        id: doc.dynamodb.Keys.id.S,
-        body: {
-          doc: attr.unwrap(doc.dynamodb.NewImage)
-        }
-      });
+      return Promise.all([
+        notifyTrxUpdated(body),
+        esClient.update({
+          index,
+          type: indexType,
+          id: doc.dynamodb.Keys.id.S,
+          body: {
+            doc: body
+          }
+        })
+      ]);
     case 'REMOVE':
       return esClient.delete({
         index,

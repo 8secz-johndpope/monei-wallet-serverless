@@ -2,9 +2,6 @@ checkTransaction:
   handler: src/steps/checkTransaction.handler
   iamRoleStatements:
     - Effect: Allow
-      Action: iot:Publish
-      Resource: "*"
-    - Effect: Allow
       Action: dynamodb:UpdateItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
@@ -29,9 +26,6 @@ approveTransaction:
 transferTokens:
   handler: src/steps/transferTokens.handler
   iamRoleStatements:
-    - Effect: Allow
-      Action: iot:Publish
-      Resource: "*"
     - Effect: Allow
       Action: secretsmanager:GetSecretValue
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
@@ -64,9 +58,6 @@ newTransaction:
     - Effect: Allow
       Action: cognito-idp:ListUsers
       Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
-    - Effect: Allow
-      Action: iot:Publish
-      Resource: "*"
     - Effect: Allow
       Action: states:StartExecution
       Resource: ${self:resources.Outputs.CheckTransactionSM.Value}
@@ -130,6 +121,9 @@ indexTransactions:
         batchSize: 1
   iamRoleStatementsName: ${self:custom.resourcesPrefix}-indexTransactionsIAM
   iamRoleStatements:
+    - Effect: Allow
+      Action: iot:Publish
+      Resource: "*"
     - Effect: Allow
       Action:
         - es:ESHttpPost

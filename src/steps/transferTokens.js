@@ -1,5 +1,4 @@
 const {withMasterAccount} = require('../services/etherium');
-const {notifyTrxCreated} = require('../services/userNotifier');
 const Transaction = require('../models/Transaction');
 
 module.exports.handler = async ({address, amount, note}) => {
@@ -15,7 +14,7 @@ module.exports.handler = async ({address, amount, note}) => {
   });
 
   // send transaction and save it to dynamoDB
-  const transaction = await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     tokenTransaction.send({from: masterAddress, gas: gasNeeded}, (error, hash) => {
       if (error) return reject(error);
       Transaction.create({
@@ -28,9 +27,4 @@ module.exports.handler = async ({address, amount, note}) => {
       }).then(resolve, reject);
     });
   });
-
-  // notify recipient about new transaction
-  await notifyTrxCreated(transaction);
-
-  return transaction;
 };

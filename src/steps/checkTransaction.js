@@ -1,6 +1,5 @@
 const {web3} = require('../services/etherium');
 const Transaction = require('../models/Transaction');
-const {notifyTrxUpdated} = require('../services/userNotifier');
 
 module.exports.handler = async event => {
   // checks transaction receipt form the blockchain
@@ -15,10 +14,5 @@ module.exports.handler = async event => {
   }
 
   // updates dynamoDB record
-  const trx = await Transaction.updateFromReceipt(receipt);
-
-  // notifies users about transaction update
-  await notifyTrxUpdated(trx);
-
-  return trx;
+  return await Transaction.updateFromReceipt(receipt);
 };
