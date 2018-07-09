@@ -20,7 +20,7 @@ Properties:
   SmsConfiguration:
     SnsCallerArn: { Fn::GetAtt: ['CognitoSMSRole', 'Arn'] }
     ExternalId: a0a4cd6c-58ba-43a2-8834-ef12b2d213c7
-  MfaConfiguration: ON
+  MfaConfiguration: OFF
   LambdaConfig:
     PostAuthentication: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"
     PostConfirmation: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"

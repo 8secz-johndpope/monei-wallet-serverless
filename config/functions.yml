@@ -49,15 +49,15 @@ postAuthentication:
         - ${self:resources.Outputs.AllowTransferSM.Value}
 
 defineAuthChallenge:
-  handler: src/steps/defineAuthChallenge.handler
+  handler: src/hooks/defineAuthChallenge.handler
   iamRoleStatements: []
 
 createAuthChallenge:
-  handler: src/steps/createAuthChallenge.handler
+  handler: src/hooks/createAuthChallenge.handler
   iamRoleStatements: []
 
 verifyAuthChallenge:
-  handler: src/steps/verifyAuthChallenge.handler
+  handler: src/hooks/verifyAuthChallenge.handler
   iamRoleStatements: []
 
 getBalance:
