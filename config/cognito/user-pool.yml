@@ -24,3 +24,6 @@ Properties:
   LambdaConfig:
     PostAuthentication: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"
     PostConfirmation: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"
+    DefineAuthChallenge: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-defineAuthChallenge"
+    CreateAuthChallenge: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-createAuthChallenge"
+    VerifyAuthChallengeResponse: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-verifyAuthChallenge"

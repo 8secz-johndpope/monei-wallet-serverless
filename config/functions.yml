@@ -48,6 +48,18 @@ postAuthentication:
         - ${self:resources.Outputs.TransferTokensSM.Value}
         - ${self:resources.Outputs.AllowTransferSM.Value}
 
+defineAuthChallenge:
+  handler: src/steps/defineAuthChallenge.handler
+  iamRoleStatements: []
+
+createAuthChallenge:
+  handler: src/steps/createAuthChallenge.handler
+  iamRoleStatements: []
+
+verifyAuthChallenge:
+  handler: src/steps/verifyAuthChallenge.handler
+  iamRoleStatements: []
+
 getBalance:
   handler: src/resolvers/getBalance.handler
   iamRoleStatements: []
