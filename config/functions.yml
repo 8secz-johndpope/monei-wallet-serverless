@@ -62,7 +62,10 @@ createAuthChallenge:
 
 verifyAuthChallenge:
   handler: src/hooks/verifyAuthChallenge.handler
-  iamRoleStatements: []
+  iamRoleStatements:
+    - Effect: Allow
+      Action: cognito-idp:AdminUpdateUserAttributes
+      Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
 
 getBalance:
   handler: src/resolvers/getBalance.handler
