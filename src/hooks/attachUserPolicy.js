@@ -8,7 +8,7 @@ const {success, fail} = require('../lib/apiUtils');
  * @param event
  * @returns {Promise<*>}
  */
-module.exports.handler = async event => {
+exports.handler = async event => {
   try {
     await iot
       .attachPrincipalPolicy({

@@ -48,6 +48,25 @@ postAuthentication:
         - ${self:resources.Outputs.TransferTokensSM.Value}
         - ${self:resources.Outputs.AllowTransferSM.Value}
 
+preSignUp:
+  handler: src/hooks/preSignUp.handler
+  iamRoleStatements: []
+
+defineAuthChallenge:
+  handler: src/hooks/defineAuthChallenge.handler
+  iamRoleStatements: []
+
+createAuthChallenge:
+  handler: src/hooks/createAuthChallenge.handler
+  iamRoleStatements: []
+
+verifyAuthChallenge:
+  handler: src/hooks/verifyAuthChallenge.handler
+  iamRoleStatements:
+    - Effect: Allow
+      Action: cognito-idp:AdminUpdateUserAttributes
+      Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
+
 getBalance:
   handler: src/resolvers/getBalance.handler
   iamRoleStatements: []

@@ -6,7 +6,7 @@ Serverless back-end for MONEI Wallet
 User interface can be found here - [monei-wallet-ui](https://github.com/MONEI/monei-wallet-ui)
 
 ## Configuration
-Change [config.develop.yml](config.develop.yml) to reflect your configurations
+Change [config.yml](config.yml) to reflect your configurations
 
 #### Basic config
 

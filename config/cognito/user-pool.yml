@@ -2,7 +2,7 @@ Type: AWS::Cognito::UserPool
 Properties:
   UserPoolName: ${self:custom.resourcesPrefix}-userPool
   UsernameAttributes: [phone_number]
-  AutoVerifiedAttributes: [phone_number]
+#  AutoVerifiedAttributes: [phone_number]
   Schema:
     - Name: phone_number
       AttributeDataType: String
@@ -17,10 +17,14 @@ Properties:
     - Name: eth_secret_key
       AttributeDataType: String
       Mutable: true
-  SmsConfiguration:
-    SnsCallerArn: { Fn::GetAtt: ['CognitoSMSRole', 'Arn'] }
-    ExternalId: a0a4cd6c-58ba-43a2-8834-ef12b2d213c7
-  MfaConfiguration: ON
+#  SmsConfiguration:
+#    SnsCallerArn: { Fn::GetAtt: ['CognitoSMSRole', 'Arn'] }
+#    ExternalId: a0a4cd6c-58ba-43a2-8834-ef12b2d213c7
+  MfaConfiguration: OFF
   LambdaConfig:
     PostAuthentication: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"
     PostConfirmation: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"
+    PreSignUp: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-preSignUp"
+    DefineAuthChallenge: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-defineAuthChallenge"
+    CreateAuthChallenge: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-createAuthChallenge"
+    VerifyAuthChallengeResponse: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-verifyAuthChallenge"

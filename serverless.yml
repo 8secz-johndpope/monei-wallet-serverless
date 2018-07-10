@@ -41,6 +41,7 @@ provider:
     ELASTICSEARCH: ${self:resources.Outputs.ElasticSearchIndexDomain.Value}
     API_ENDPOINT: ${self:custom.apiEndpoint}
     FONTEND_URL: ${self:custom.config.FONTEND_URL}
+    AUTHY_API_KEY: ${env:AUTHY_API_KEY}
 
   timeout: 10
   cfLogs: true
@@ -50,7 +51,7 @@ custom:
   currentStage: ${opt:stage, self:custom.defaultStage}
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
   transactionsTable: ${self:custom.resourcesPrefix}-Transactions
-  config: ${file(./config.${self:custom.currentStage}.yml)}
+  config: ${file(./config.yml):${self:custom.currentStage}}
   elasticsearchDomain: ${self:provider.stage}-${self:service}
   apiEndpoint:
     Fn::Join:
@@ -81,11 +82,50 @@ resources:
     UserPool: ${file(./config/cognito/user-pool.yml)}
     UserPoolClient: ${file(./config/cognito/user-pool-client.yml)}
     IdentityPool: ${file(./config/cognito/identity-pool.yml)}
-    CognitoLambdaInvocationPermission: ${file(./config/cognito/cognito-lambda-invocation-permission.yml)}
     CognitoAuthorizedRole: ${file(./config/cognito/cognito-authorized-role.yml)}
     CognitoSMSRole: ${file(./config/cognito/cognito-sms-role.yml)}
     IdentityPoolRoleMapping: ${file(./config/cognito/identity-pool-role-mapping.yml)}
     ElasticSearchIndex: ${file(./config/elasticsearch.yml)}
+
+    PostAuthenticationPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: { Fn::GetAtt: ['PostAuthenticationLambdaFunction', 'Arn'] }
+        Principal: cognito-idp.amazonaws.com
+        SourceArn:  { Fn::GetAtt: ['UserPool', 'Arn'] }
+
+    DefineAuthChallengePermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: { Fn::GetAtt: ['DefineAuthChallengeLambdaFunction', 'Arn'] }
+        Principal: cognito-idp.amazonaws.com
+        SourceArn:  { Fn::GetAtt: ['UserPool', 'Arn'] }
+
+    CreateAuthChallengePermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: { Fn::GetAtt: ['CreateAuthChallengeLambdaFunction', 'Arn'] }
+        Principal: cognito-idp.amazonaws.com
+        SourceArn:  { Fn::GetAtt: ['UserPool', 'Arn'] }
+
+    VerifyAuthChallengePermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: { Fn::GetAtt: ['VerifyAuthChallengeLambdaFunction', 'Arn'] }
+        Principal: cognito-idp.amazonaws.com
+        SourceArn:  { Fn::GetAtt: ['UserPool', 'Arn'] }
+
+    PreSignUpPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: { Fn::GetAtt: ['PreSignUpLambdaFunction', 'Arn'] }
+        Principal: cognito-idp.amazonaws.com
+        SourceArn:  { Fn::GetAtt: ['UserPool', 'Arn'] }
 
     UserNotificationsPolicy:
       Type: AWS::IoT::Policy

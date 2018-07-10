@@ -48,7 +48,7 @@ const transferTokens = async ({address, amount, note}) => {
   return trx;
 };
 
-module.exports.handler = async event => {
+exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
   const credentials = await getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
   const {resourcePath} = event.queryStringParameters;

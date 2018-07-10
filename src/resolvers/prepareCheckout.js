@@ -2,7 +2,7 @@ const axios = require('axios');
 const qs = require('qs');
 const {getSecretValue} = require('../services/secrets');
 
-module.exports.handler = async event => {
+exports.handler = async event => {
   const amount = (event.arguments.amount / 100).toFixed(2);
   const credentials = await getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
   const data = {
