@@ -50,7 +50,7 @@ custom:
   currentStage: ${opt:stage, self:custom.defaultStage}
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
   transactionsTable: ${self:custom.resourcesPrefix}-Transactions
-  config: ${file(./config.${self:custom.currentStage}.yml)}
+  config: ${file(./config.yml):${self:custom.currentStage}}
   elasticsearchDomain: ${self:provider.stage}-${self:service}
   apiEndpoint:
     Fn::Join:
