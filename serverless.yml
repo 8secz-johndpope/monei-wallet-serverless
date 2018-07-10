@@ -41,6 +41,7 @@ provider:
     ELASTICSEARCH: ${self:resources.Outputs.ElasticSearchIndexDomain.Value}
     API_ENDPOINT: ${self:custom.apiEndpoint}
     FONTEND_URL: ${self:custom.config.FONTEND_URL}
+    AUTHY_API_KEY: ${env:AUTHY_API_KEY}
 
   timeout: 10
   cfLogs: true
