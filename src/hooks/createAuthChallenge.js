@@ -3,7 +3,7 @@ const {PhoneNumberUtil} = require('google-libphonenumber');
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 
-module.exports.handler = (event, context, callback) => {
+exports.handler = (event, context, callback) => {
   console.log(JSON.stringify(event, null, 2));
 
   // skip challenge if user has active session

@@ -6,7 +6,7 @@ const {withMasterAccount} = require('../services/etherium');
  * @param encryptedPrivateKey - result of web3.eth.accounts.encrypt
  * @returns {Promise<Object>}
  */
-module.exports.handler = async ({address, encryptedPrivateKey}) => {
+exports.handler = async ({address, encryptedPrivateKey}) => {
   const {web3, token, masterAddress} = await withMasterAccount();
 
   const [totalSupply, allowance, gasPrice, accountBalance] = await Promise.all([

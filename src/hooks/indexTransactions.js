@@ -61,7 +61,7 @@ const indexDocument = (index, indexType, doc) => {
   }
 };
 
-module.exports.handler = async event => {
+exports.handler = async event => {
   const indexing = event.Records.map(rec => indexDocument('transactions', 'transactions', rec));
   return Promise.all(indexing);
 };

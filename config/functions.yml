@@ -48,6 +48,10 @@ postAuthentication:
         - ${self:resources.Outputs.TransferTokensSM.Value}
         - ${self:resources.Outputs.AllowTransferSM.Value}
 
+preSignUp:
+  handler: src/hooks/preSignUp.handler
+  iamRoleStatements: []
+
 defineAuthChallenge:
   handler: src/hooks/defineAuthChallenge.handler
   iamRoleStatements: []

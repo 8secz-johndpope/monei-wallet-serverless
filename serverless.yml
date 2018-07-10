@@ -119,6 +119,14 @@ resources:
         Principal: cognito-idp.amazonaws.com
         SourceArn:  { Fn::GetAtt: ['UserPool', 'Arn'] }
 
+    PreSignUpPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: { Fn::GetAtt: ['PreSignUpLambdaFunction', 'Arn'] }
+        Principal: cognito-idp.amazonaws.com
+        SourceArn:  { Fn::GetAtt: ['UserPool', 'Arn'] }
+
     UserNotificationsPolicy:
       Type: AWS::IoT::Policy
       Properties:

@@ -38,7 +38,7 @@ const FREE_TOKENS_AMOUNT = 200;
  *
  * @returns {Promise<Object>} - auth event
  */
-module.exports.handler = async event => {
+exports.handler = async event => {
   // skip registration if user already has eth address
   if (event.request.userAttributes['custom:eth_address']) {
     return event;
