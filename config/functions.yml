@@ -48,6 +48,18 @@ postAuthentication:
         - ${self:resources.Outputs.TransferTokensSM.Value}
         - ${self:resources.Outputs.AllowTransferSM.Value}
 
+userSignUp:
+  handler: src/hooks/userSignUp.handler
+  events:
+    - http:
+        path: signup
+        method: post
+        cors: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action: cognito-idp:SignUp
+      Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
+
 preSignUp:
   handler: src/hooks/preSignUp.handler
   iamRoleStatements: []

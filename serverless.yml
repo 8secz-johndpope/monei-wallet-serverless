@@ -36,6 +36,7 @@ provider:
     ALLOW_TRANSFER_SM: ${self:resources.Outputs.AllowTransferSM.Value}
     TRANSFER_TOKENS_SM: ${self:resources.Outputs.TransferTokensSM.Value}
     USER_POOL_ID: ${self:resources.Outputs.UserPoolId.Value}
+    USER_POOL_CLIENT_ID: ${self:resources.Outputs.UserPoolClientId.Value}
     USER_NOTIFICATIONS_POLICY: ${self:custom.resourcesPrefix}-UserNotificationsPolicy
     INFURA_URL: ${self:custom.config.INFURA_URL}
     ELASTICSEARCH: ${self:resources.Outputs.ElasticSearchIndexDomain.Value}
