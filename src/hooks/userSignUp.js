@@ -17,7 +17,6 @@ exports.handler = async event => {
 
   try {
     const user = await provider.signUp(params).promise();
-    console.log(JSON.stringify(user, null, 2));
     return success(user);
   } catch (error) {
     console.log(JSON.stringify(error, null, 2));

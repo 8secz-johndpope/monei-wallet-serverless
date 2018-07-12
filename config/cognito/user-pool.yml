@@ -23,7 +23,6 @@ Properties:
   MfaConfiguration: OFF
   LambdaConfig:
     PostAuthentication: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"
-    PostConfirmation: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"
     PreSignUp: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-preSignUp"
     DefineAuthChallenge: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-defineAuthChallenge"
     CreateAuthChallenge: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-createAuthChallenge"
