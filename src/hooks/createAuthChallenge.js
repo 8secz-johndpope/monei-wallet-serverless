@@ -9,7 +9,7 @@ exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
   // skip challenge if user has active session
-  if (event.request.session && event.request.session.length > 0) return callback(null, event);
+  if (event.request.session && event.request.session.length > 0) return event;
 
   const phoneNumber = phoneUtil.parse(event.request.userAttributes.phone_number);
   const nationalNumber = phoneNumber.getNationalNumber();

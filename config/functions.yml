@@ -44,9 +44,19 @@ postAuthentication:
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.ENCRYPT_PASSWORD_KEY}-*"
     - Effect: Allow
       Action: states:StartExecution
-      Resource:
-        - ${self:resources.Outputs.TransferTokensSM.Value}
-        - ${self:resources.Outputs.AllowTransferSM.Value}
+      Resource: ${self:resources.Outputs.AllowTransferSM.Value}
+
+userSignUp:
+  handler: src/hooks/userSignUp.handler
+  events:
+    - http:
+        path: signup
+        method: post
+        cors: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action: cognito-idp:SignUp
+      Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
 
 preSignUp:
   handler: src/hooks/preSignUp.handler
@@ -66,6 +76,9 @@ verifyAuthChallenge:
     - Effect: Allow
       Action: cognito-idp:AdminUpdateUserAttributes
       Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
+    - Effect: Allow
+      Action: states:StartExecution
+      Resource: ${self:resources.Outputs.TransferTokensSM.Value}
 
 getBalance:
   handler: src/resolvers/getBalance.handler

@@ -5,9 +5,6 @@ const AWS = require('aws-sdk');
 const provider = new AWS.CognitoIdentityServiceProvider();
 const stepFunctions = new AWS.StepFunctions();
 
-// tokens stored in the contract as integers, so amount = value * 10 ** decimals
-const FREE_TOKENS_AMOUNT = 200;
-
 /**
  * A hook that is triggered by cognito PostAuthentication and PostConfirmation events
  * @param event
@@ -39,12 +36,12 @@ const FREE_TOKENS_AMOUNT = 200;
  * @returns {Promise<Object>} - auth event
  */
 exports.handler = async event => {
-  // skip registration if user already has eth address
-  if (event.request.userAttributes['custom:eth_address']) {
-    return event;
-  }
+  console.log(JSON.stringify(event, null, 2));
 
-  // fetch aws password from secret manager
+  // skip registration if user already has eth address
+  if (event.request.userAttributes['custom:eth_address']) return event;
+
+  // fetch encrypt password from secret manager
   const encryptPassword = await getSecretValue(process.env.ENCRYPT_PASSWORD_KEY);
 
   // create new eth account for a user
@@ -72,20 +69,8 @@ exports.handler = async event => {
   // update eth address and secret key in cognito for a new user
   await provider.adminUpdateUserAttributes(params).promise();
 
-  // start transfer tokens state machine to grant new user free tokens
-  const grantFreeTokens = stepFunctions
-    .startExecution({
-      stateMachineArn: process.env.TRANSFER_TOKENS_SM,
-      input: JSON.stringify({
-        address: account.address,
-        amount: FREE_TOKENS_AMOUNT,
-        note: 'Free coins to start right away!'
-      })
-    })
-    .promise();
-
   // start allow transfers state machine
-  const allowTransfers = stepFunctions
+  await stepFunctions
     .startExecution({
       stateMachineArn: process.env.ALLOW_TRANSFER_SM,
       input: JSON.stringify({
@@ -94,8 +79,6 @@ exports.handler = async event => {
       })
     })
     .promise();
-
-  await Promise.all([grantFreeTokens, allowTransfers]);
 
   return event;
 };
