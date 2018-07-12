@@ -39,10 +39,13 @@ const FREE_TOKENS_AMOUNT = 200;
  * @returns {Promise<Object>} - auth event
  */
 exports.handler = async event => {
+  const user = event.request.userAttributes;
+
+  // skip registration if user's phone is not verified
+  if (user.phone_number_verified !== 'true') return event;
+
   // skip registration if user already has eth address
-  if (event.request.userAttributes['custom:eth_address']) {
-    return event;
-  }
+  if (user['custom:eth_address']) return event;
 
   // fetch aws password from secret manager
   const encryptPassword = await getSecretValue(process.env.ENCRYPT_PASSWORD_KEY);
