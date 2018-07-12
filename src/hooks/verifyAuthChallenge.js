@@ -3,13 +3,18 @@ const {promisify} = require('es6-promisify');
 const AWS = require('aws-sdk');
 
 const provider = new AWS.CognitoIdentityServiceProvider();
+const stepFunctions = new AWS.StepFunctions();
 const verificationCheck = promisify(authy.phones().verification_check);
+
+// tokens stored in the contract as integers, so amount = value * 10 ** decimals
+const FREE_TOKENS_AMOUNT = 200;
 
 exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
+  const user = event.request.userAttributes;
+  const phoneVerified = user.phone_number_verified === 'true';
   const {nationalNumber, countryCode} = event.request.privateChallengeParameters;
-  const phoneVerified = event.request.userAttributes.phone_number_verified === 'true';
   const challengeAnswer = event.request.challengeAnswer;
 
   try {
@@ -28,13 +33,34 @@ exports.handler = async event => {
     }
 
     // set user phone_number_verified attr to true
-    await provider
+    const setPhoneVerified = await provider
       .adminUpdateUserAttributes({
         UserAttributes: [{Name: 'phone_number_verified', Value: 'true'}],
         UserPoolId: event.userPoolId,
         Username: event.userName
       })
       .promise();
+
+    const tasks = [setPhoneVerified];
+
+    if (user['custom:eth_address']) {
+      // start transfer tokens state machine to grant free tokens
+      // to a user who had verified his phone
+      const grantFreeTokens = stepFunctions
+        .startExecution({
+          stateMachineArn: process.env.TRANSFER_TOKENS_SM,
+          input: JSON.stringify({
+            address: user['custom:eth_address'],
+            amount: FREE_TOKENS_AMOUNT,
+            note: 'Free coins to start right away!'
+          })
+        })
+        .promise();
+
+      tasks.push(grantFreeTokens);
+    }
+
+    await Promise.all(tasks);
 
     return event;
   } catch (error) {
