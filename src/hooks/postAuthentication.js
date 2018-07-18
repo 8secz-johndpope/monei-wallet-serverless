@@ -2,7 +2,7 @@ const {web3} = require('../services/etherium');
 const {getSecretValue} = require('../services/secrets');
 const AWS = require('aws-sdk');
 
-const provider = new AWS.CognitoIdentityServiceProvider();
+const cognito = new AWS.CognitoIdentityServiceProvider();
 const stepFunctions = new AWS.StepFunctions();
 
 /**
@@ -67,7 +67,7 @@ exports.handler = async event => {
   };
 
   // update eth address and secret key in cognito for a new user
-  await provider.adminUpdateUserAttributes(params).promise();
+  await cognito.adminUpdateUserAttributes(params).promise();
 
   // start allow transfers state machine
   await stepFunctions

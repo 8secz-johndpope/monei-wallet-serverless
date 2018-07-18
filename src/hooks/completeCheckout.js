@@ -5,10 +5,12 @@ const {redirect, fail} = require('../lib/apiUtils');
 const {isSuccessful, getDescription} = require('../services/monei');
 const {withMasterAccount, masterAddress} = require('../services/etherium');
 const Transaction = require('../models/Transaction');
+const {normalizeUser} = require('../lib/cognitoUtils');
 const AWS = require('aws-sdk');
 const uniqid = require('uniqid');
 
 const stepFunctions = new AWS.StepFunctions();
+const cognito = new AWS.CognitoIdentityServiceProvider();
 
 const transferTokens = async ({address, amount, note}) => {
   const {token} = await withMasterAccount();
@@ -48,6 +50,29 @@ const transferTokens = async ({address, amount, note}) => {
   return trx;
 };
 
+const savePaymentMethod = async ({username, registrationId}) => {
+  const params = {
+    UserPoolId: process.env.USER_POOL_ID,
+    Username: username
+  };
+  const data = await cognito.adminGetUser(params).promise();
+  const user = normalizeUser(data);
+
+  console.log(user);
+
+  let registrationIds = user['custom:registration_ids'];
+  registrationIds = registrationIds ? registrationIds.split(',') : [];
+
+  params.UserAttributes = [
+    {
+      Name: 'custom:registration_ids',
+      Value: Array.from(new Set([...registrationIds, registrationId])).join()
+    }
+  ];
+
+  return cognito.adminUpdateUserAttributes(params).promise();
+};
+
 exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
   const credentials = await getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
@@ -70,7 +95,13 @@ exports.handler = async event => {
     const note = getDescription(res.data);
 
     if (isSuccessful(res.data)) {
-      await transferTokens({address, amount, note});
+      const transfer = transferTokens({address, amount, note});
+      const save = savePaymentMethod({
+        username: res.data.customer.phone,
+        registrationId: res.data.registrationId
+      });
+
+      await Promise.all([transfer, save]);
     } else {
       await Transaction.create({
         id: uniqid(),

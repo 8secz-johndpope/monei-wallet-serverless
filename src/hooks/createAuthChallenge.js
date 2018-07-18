@@ -25,6 +25,7 @@ exports.handler = async event => {
 
   try {
     const res = await verificationStart(nationalNumber, countryCode, 'sms');
+    console.log(JSON.stringify(res, null, 2));
     if (res.success) return event;
     return res.message;
   } catch (error) {

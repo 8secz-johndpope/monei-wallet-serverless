@@ -36,7 +36,8 @@ exports.normalizeUser = user => {
     status: user.UserStatus,
     enabled: user.Enabled
   };
-  user.Attributes.forEach(({Name, Value}) => {
+  const attributes = user.UserAttributes || user.Attributes;
+  attributes.forEach(({Name, Value}) => {
     result[Name] = Value;
   });
   return result;

@@ -84,7 +84,6 @@ resources:
     UserPoolClient: ${file(./config/cognito/user-pool-client.yml)}
     IdentityPool: ${file(./config/cognito/identity-pool.yml)}
     CognitoAuthorizedRole: ${file(./config/cognito/cognito-authorized-role.yml)}
-    CognitoSMSRole: ${file(./config/cognito/cognito-sms-role.yml)}
     IdentityPoolRoleMapping: ${file(./config/cognito/identity-pool-role-mapping.yml)}
     ElasticSearchIndex: ${file(./config/elasticsearch.yml)}
 
