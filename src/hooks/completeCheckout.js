@@ -9,6 +9,7 @@ const AWS = require('aws-sdk');
 const uniqid = require('uniqid');
 
 const stepFunctions = new AWS.StepFunctions();
+const cognito = new AWS.CognitoIdentityServiceProvider();
 
 const transferTokens = async ({address, amount, note}) => {
   const {token} = await withMasterAccount();
@@ -47,6 +48,8 @@ const transferTokens = async ({address, amount, note}) => {
 
   return trx;
 };
+
+const savePaymentMethod = ({username, registrationId}) => {};
 
 exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
