@@ -26,7 +26,6 @@ exports.handler = async event => {
     amount,
     currency: 'EUR',
     paymentType: 'DB',
-    createRegistration: true,
     customer: {
       merchantCustomerId: user['custom:eth_address'],
       phone: user.phone_number
@@ -47,7 +46,8 @@ exports.handler = async event => {
     const checkoutId = res.data.id;
     const query = qs.stringify({
       checkoutId,
-      redirectUrl: process.env.API_ENDPOINT + '/complete_checkout'
+      redirectUrl: process.env.API_ENDPOINT + '/complete_checkout',
+      savePaymentDetails: true
     });
     return {checkoutUrl: 'https://payments.monei.net/?' + query};
   } catch (error) {
