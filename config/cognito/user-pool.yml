@@ -19,6 +19,9 @@ Properties:
     - Name: registration_ids
       AttributeDataType: String
       Mutable: true
+    - Name: iban
+      AttributeDataType: String
+      Mutable: true
   MfaConfiguration: OFF
   LambdaConfig:
     PostAuthentication: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-postAuthentication"
