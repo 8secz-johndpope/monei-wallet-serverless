@@ -8,10 +8,10 @@ userPoolConfig:
   userPoolId: ${self:resources.Outputs.UserPoolId.Value}
 mappingTemplates:
   - dataSource: balanceResolver
-    type: User
+    type: Query
     field: balance
     request: "lambda-request.json"
-    response: "response.json"
+    response: "plain-response.txt"
 
   - dataSource: newTransaction
     type: Mutation
@@ -30,12 +30,6 @@ mappingTemplates:
     field: transactions
     request: "transactions-request.json"
     response: "transactions-response.json"
-
-  - dataSource: passThrough
-    type: Query
-    field: user
-    request: "user-request.json"
-    response: "response.json"
 
 schema: src/schema.graphql
 
