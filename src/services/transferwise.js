@@ -1,5 +1,6 @@
 const axios = require('axios');
 const qs = require('qs');
+const uuidv4 = require('uuid/v4');
 
 const responseHandler = response => response.data;
 
@@ -79,6 +80,40 @@ class TransferWise {
   async deleteAccount(accountId) {
     await this.apiClient.delete(`/v1/accounts/${accountId}`);
     return {success: true};
+  }
+
+  async createQuote(amount) {
+    return this.apiClient.post('/v1/quotes', {
+      profile: this.profile,
+      source: 'EUR',
+      target: 'EUR',
+      rateType: 'FIXED',
+      sourceAmount: amount,
+      type: 'REGULAR'
+    });
+  }
+
+  async createTransfer({targetAccount, quote}) {
+    return this.apiClient.post('/v1/transfers', {
+      targetAccount,
+      quote,
+      customerTransactionId: uuidv4(),
+      details: {
+        reference: 'MONEI Wallet payout'
+      }
+    });
+  }
+
+  async confirmTransfer(transferId) {
+    return this.apiClient.post(`/v1/transfers/${transferId}/payments`, {
+      type: 'BALANCE'
+    });
+  }
+
+  async transfer({targetAccount, amount}) {
+    const quote = await this.createQuote(amount);
+    const transfer = await this.createTransfer({targetAccount, quote: quote.id});
+    return this.confirmTransfer(transfer.id);
   }
 }
 
