@@ -14,11 +14,11 @@ const errorHandler = error => {
 axios.interceptors.response.use(responseHandler, errorHandler);
 
 class TransferWise {
-  constructor(props) {
-    this.refreshToken = props.refreshToken;
-    this.clientId = props.clientId;
-    this.clientSecret = props.clientSecret;
-    this.profile = props.profile;
+  constructor(config) {
+    this.refreshToken = config.refreshToken;
+    this.clientId = config.clientId;
+    this.clientSecret = config.clientSecret;
+    this.profile = config.profile;
     this.apiClient = axios.create({
       baseURL: process.env.TRANSFERWISE_API_URL
     });
