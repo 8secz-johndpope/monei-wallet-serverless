@@ -43,6 +43,8 @@ provider:
     API_ENDPOINT: ${self:custom.apiEndpoint}
     FONTEND_URL: ${self:custom.config.FONTEND_URL}
     AUTHY_API_KEY: ${env:AUTHY_API_KEY}
+    TRANSFERWISE_CREDENTIALS_KEY: ${self:custom.config.TRANSFERWISE_CREDENTIALS_KEY}
+    TRANSFERWISE_API_URL: ${self:custom.config.TRANSFERWISE_API_URL}
 
   timeout: 10
   cfLogs: true
