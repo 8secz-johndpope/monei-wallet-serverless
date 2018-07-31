@@ -21,6 +21,22 @@ type Checkout {
     checkoutUrl: String!
 }
 
+type BankAccountDetails {
+    legalType: String!
+    accountNumber: String!
+    IBAN: String!
+    BIC: String
+}
+
+type BankAccount {
+    id: String!
+    accountHolderName: String!
+    currency: String!
+    country: String!
+    type: String!
+    details: BankAccountDetails!
+}
+
 type Query {
     balance: Int!
     transactions(size: Int, from: Int): Transactions
