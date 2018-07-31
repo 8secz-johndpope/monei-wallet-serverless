@@ -75,3 +75,50 @@ exports.createAccountRes = {
   },
   user: 5461222
 };
+
+exports.createQuoteRes = {
+  id: 1291658,
+  source: 'EUR',
+  target: 'EUR',
+  sourceAmount: 1,
+  targetAmount: 0.4,
+  type: 'REGULAR',
+  rate: 1,
+  createdTime: '2018-07-30T13:00:49.047Z',
+  createdByUserId: 5461222,
+  profile: 256,
+  business: 256,
+  rateType: 'FIXED',
+  deliveryEstimate: '2018-08-03T13:00:49.047Z',
+  fee: 0.6,
+  allowedProfileTypes: ['PERSONAL', 'BUSINESS'],
+  guaranteedTargetAmount: false,
+  ofSourceAmount: true
+};
+
+exports.createTransferReq = {targetAccount: 14177246, amount: 1};
+
+exports.createTransferRes = {
+  id: 433003,
+  user: 5461222,
+  targetAccount: 14177246,
+  sourceAccount: 14059675,
+  quote: 1286857,
+  status: 'incoming_payment_waiting',
+  reference: 'MONEI Wallet payout',
+  rate: 1,
+  created: '2018-07-26 12:10:51',
+  business: 256,
+  transferRequest: null,
+  details: {
+    reference: 'MONEI Wallet payout'
+  },
+  hasActiveIssues: false,
+  sourceCurrency: 'EUR',
+  sourceValue: 9.4,
+  targetCurrency: 'EUR',
+  targetValue: 9.4,
+  customerTransactionId: 'cd942384-c1d8-4b0f-9b30-772dadc94741'
+};
+
+exports.confirmTransferRes = {type: 'BALANCE', status: 'COMPLETED', errorCode: null};
