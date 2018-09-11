@@ -19,21 +19,19 @@ exports.handler = async event => {
 
   console.log(JSON.stringify(account, null, 2));
 
-  const params = {
-    UserPoolId: process.env.USER_POOL_ID,
-    Username: event.identity.username,
-    UserAttributes: [
-      {
-        Name: 'custom:bank_account_id',
-        Value: String(account.id)
-      }
-    ]
-  };
-
-  console.log(JSON.stringify(params, null, 2));
-
   // update bank_account_id in cognito for a user
-  await cognito.adminUpdateUserAttributes(params).promise();
+  await cognito
+    .adminUpdateUserAttributes({
+      UserPoolId: process.env.USER_POOL_ID,
+      Username: event.identity.username,
+      UserAttributes: [
+        {
+          Name: 'custom:bank_account_id',
+          Value: String(account.id)
+        }
+      ]
+    })
+    .promise();
 
   return {
     id: account.id,
