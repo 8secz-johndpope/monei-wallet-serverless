@@ -21,20 +21,11 @@ type Checkout {
     checkoutUrl: String!
 }
 
-type BankAccountDetails {
-    legalType: String!
-    accountNumber: String!
-    IBAN: String!
-    BIC: String
-}
-
 type BankAccount {
     id: String!
     accountHolderName: String!
-    currency: String!
     country: String!
-    type: String!
-    details: BankAccountDetails!
+    IBAN: String!
 }
 
 type Query {
@@ -51,6 +42,11 @@ type Mutation {
         note: String
     ): Transaction!
     prepareCheckout(amount: Int!): Checkout!
+    attachBankAccount(
+        accountHolderName: String!
+        country: String!
+        IBAN: String!
+    ): BankAccount!
 }
 
 schema {

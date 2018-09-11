@@ -20,7 +20,7 @@ Properties:
     - Name: registration_ids
       AttributeDataType: String
       Mutable: true
-    - Name: iban
+    - Name: bank_account_id
       AttributeDataType: String
       Mutable: true
   MfaConfiguration: OFF
