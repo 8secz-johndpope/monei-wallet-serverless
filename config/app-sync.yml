@@ -33,7 +33,7 @@ mappingTemplates:
 
   - dataSource: getBankAccount
     type: Query
-    field: getBankAccount
+    field: bankAccount
     request: "lambda-request.json"
     response: "response.json"
 
