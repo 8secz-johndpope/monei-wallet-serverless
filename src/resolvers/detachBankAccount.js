@@ -4,7 +4,7 @@ const Cognito = require('../services/cognito');
 
 const cognito = new Cognito();
 
-// get transferwise account for a user
+// deletes transferwise account
 exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
@@ -12,19 +12,17 @@ exports.handler = async event => {
   console.log(JSON.stringify(user, null, 2));
 
   // exit function if no bank account
-  if (!user.bank_account_id) return null;
+  if (!user.bank_account_id) return {success: true};
 
   const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
   const options = JSON.parse(creds);
 
   const client = new TransferWise(options);
-  const bankAccount = await client.getAccount(user.bank_account_id);
-  console.log(JSON.stringify(bankAccount, null, 2));
 
-  return {
-    id: bankAccount.id,
-    accountHolderName: bankAccount.accountHolderName,
-    country: bankAccount.country,
-    IBAN: bankAccount.details.IBAN.replace(/^.{20}/g, '****')
-  };
+  // delete transferwise account
+  await client.deleteAccount(user.bank_account_id);
+
+  // remove bank_account_id attr from cognito user
+  await cognito.updateUser(event.identity.username, {bank_account_id: ''});
+  return {success: true};
 };

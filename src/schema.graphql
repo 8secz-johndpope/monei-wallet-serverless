@@ -28,6 +28,10 @@ type BankAccount {
     IBAN: String!
 }
 
+type DetachBankAccount {
+    success: Boolean
+}
+
 type Query {
     balance: Int!
     bankAccount: BankAccount,
@@ -48,6 +52,7 @@ type Mutation {
         country: String!
         IBAN: String!
     ): BankAccount!
+    detachBankAccount: DetachBankAccount
 }
 
 schema {

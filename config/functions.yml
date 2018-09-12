@@ -130,6 +130,16 @@ getBankAccount:
     Action: secretsmanager:GetSecretValue
     Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.TRANSFERWISE_CREDENTIALS_KEY}-*"
 
+detachBankAccount:
+  handler: src/resolvers/detachBankAccount.handler
+  iamRoleStatements:
+  - Effect: Allow
+    Action: cognito-idp:AdminGetUser
+    Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
+  - Effect: Allow
+    Action: secretsmanager:GetSecretValue
+    Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.TRANSFERWISE_CREDENTIALS_KEY}-*"
+
 completeCheckout:
   handler: src/hooks/completeCheckout.handler
   events:

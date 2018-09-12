@@ -31,6 +31,12 @@ mappingTemplates:
     request: "lambda-request.json"
     response: "response.json"
 
+  - dataSource: detachBankAccount
+    type: Mutation
+    field: detachBankAccount
+    request: "lambda-request.json"
+    response: "response.json"
+
   - dataSource: getBankAccount
     type: Query
     field: bankAccount
@@ -67,6 +73,12 @@ dataSources:
     config:
       lambdaFunctionArn: { Fn::GetAtt: ['AttachBankAccountLambdaFunction', 'Arn'] }
       serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+
+  - type: AWS_LAMBDA
+      name: detachBankAccount
+      config:
+        lambdaFunctionArn: { Fn::GetAtt: ['DetachBankAccountLambdaFunction', 'Arn'] }
+        serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
 
   - type: AWS_LAMBDA
     name: getBankAccount
