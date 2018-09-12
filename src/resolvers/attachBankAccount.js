@@ -1,7 +1,8 @@
 const TransferWise = require('../services/transferwise');
 const {getSecretValue} = require('../services/secrets');
-const AWS = require('aws-sdk');
-const cognito = new AWS.CognitoIdentityServiceProvider();
+const Cognito = require('../services/cognito');
+
+const cognito = new Cognito();
 
 // creates transferwise account
 exports.handler = async event => {
@@ -20,18 +21,9 @@ exports.handler = async event => {
   console.log(JSON.stringify(account, null, 2));
 
   // update bank_account_id in cognito for a user
-  await cognito
-    .adminUpdateUserAttributes({
-      UserPoolId: process.env.USER_POOL_ID,
-      Username: event.identity.username,
-      UserAttributes: [
-        {
-          Name: 'custom:bank_account_id',
-          Value: String(account.id)
-        }
-      ]
-    })
-    .promise();
+  await cognito.updateUser(event.identity.username, {
+    bank_account_id: account.id
+  });
 
   return {
     id: account.id,

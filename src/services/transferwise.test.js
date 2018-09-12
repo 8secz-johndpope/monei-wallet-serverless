@@ -1,7 +1,7 @@
 const TransferWise = require('./transferwise');
 const axios = require('axios');
 const MockAdapter = require('axios-mock-adapter');
-const fixtures = require('./transferwise.fixture');
+const fixtures = require('./fixtures/transferwise');
 
 const options = {
   clientId: 'moeni',

@@ -1,33 +1,23 @@
 const axios = require('axios');
-const AWS = require('aws-sdk');
 const qs = require('qs');
 const {getSecretValue} = require('../services/secrets');
-const {normalizeUser} = require('../lib/cognitoUtils');
+const Cognito = require('../services/cognito');
 
-const cognito = new AWS.CognitoIdentityServiceProvider();
-
-const getCognitoUser = async username => {
-  const params = {
-    UserPoolId: process.env.USER_POOL_ID,
-    Username: username
-  };
-  const data = await cognito.adminGetUser(params).promise();
-  return normalizeUser(data);
-};
+const cognito = new Cognito();
 
 exports.handler = async event => {
   const amount = (event.arguments.amount / 100).toFixed(2);
   const getCredentials = getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
-  const getUser = getCognitoUser(event.identity.claims['phone_number']);
+  const getUser = cognito.getUser(event.identity.claims['phone_number']);
   const [credentials, user] = await Promise.all([getCredentials, getUser]);
-  const registrationIds = user['custom:registration_ids'];
+  const registrationIds = user.registration_ids;
   const data = {
     authentication: JSON.parse(credentials),
     amount,
     currency: 'EUR',
     paymentType: 'DB',
     customer: {
-      merchantCustomerId: user['custom:eth_address'],
+      merchantCustomerId: user.eth_address,
       phone: user.phone_number
     }
   };
