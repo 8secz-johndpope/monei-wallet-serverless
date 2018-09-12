@@ -12,9 +12,6 @@ exports.handler = async event => {
   const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
   const options = JSON.parse(creds);
 
-  // manually set profile id for now
-  options.profile = 256;
-
   const client = new TransferWise(options);
   const account = await client.createAccount({accountHolderName, country, IBAN});
 

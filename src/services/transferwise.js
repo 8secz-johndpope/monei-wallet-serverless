@@ -18,7 +18,7 @@ class TransferWise {
     this.refreshToken = config.refreshToken;
     this.clientId = config.clientId;
     this.clientSecret = config.clientSecret;
-    this.profile = config.profile;
+    this.profile = config.profile || 256; // manually set profile id for now
     this.apiClient = axios.create({
       baseURL: process.env.TRANSFERWISE_API_URL
     });

@@ -31,6 +31,12 @@ mappingTemplates:
     request: "lambda-request.json"
     response: "response.json"
 
+  - dataSource: getBankAccount
+    type: Query
+    field: getBankAccount
+    request: "lambda-request.json"
+    response: "response.json"
+
   - dataSource: elasticSearch
     type: Query
     field: transactions
@@ -60,6 +66,12 @@ dataSources:
     name: attachBankAccount
     config:
       lambdaFunctionArn: { Fn::GetAtt: ['AttachBankAccountLambdaFunction', 'Arn'] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+
+  - type: AWS_LAMBDA
+    name: getBankAccount
+    config:
+      lambdaFunctionArn: { Fn::GetAtt: ['GetBankAccountLambdaFunction', 'Arn'] }
       serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
 
   - type: AWS_LAMBDA

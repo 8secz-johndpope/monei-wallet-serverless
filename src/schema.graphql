@@ -30,6 +30,7 @@ type BankAccount {
 
 type Query {
     balance: Int!
+    bankAccount: BankAccount,
     transactions(size: Int, from: Int): Transactions
 }
 
