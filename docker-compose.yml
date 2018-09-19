@@ -1,7 +1,7 @@
 version: '3'
 services:
   serverless:
-    image: dmitriynevzorov/serverless:1.28.0
+    image: dmitriynevzorov/serverless:1.32.0
     env_file: .env
     volumes:
       - ~/.aws:/root/.aws

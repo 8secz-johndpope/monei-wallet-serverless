@@ -134,7 +134,9 @@ detachBankAccount:
   handler: src/resolvers/detachBankAccount.handler
   iamRoleStatements:
   - Effect: Allow
-    Action: cognito-idp:AdminGetUser
+    Action:
+      - cognito-idp:AdminGetUser
+      - cognito-idp:AdminUpdateUserAttributes
     Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
   - Effect: Allow
     Action: secretsmanager:GetSecretValue

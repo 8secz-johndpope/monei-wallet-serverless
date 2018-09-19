@@ -5,6 +5,7 @@ const TransferWise = require('./src/services/transferwise');
   const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
   const options = JSON.parse(creds);
   options.profile = 256;
+
   const client = new TransferWise(options);
   try {
     const account = await client.createAccount({
