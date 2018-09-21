@@ -1,12 +1,3 @@
-type User {
-    id: String!
-    name: String!
-    email: String!
-    phoneNumber: String!
-    address: String!
-    balance: Int!
-}
-
 type Transactions {
     items: [Transaction!]!
     total: Int
@@ -30,8 +21,20 @@ type Checkout {
     checkoutUrl: String!
 }
 
+type BankAccount {
+    id: String!
+    accountHolderName: String!
+    country: String!
+    IBAN: String!
+}
+
+type DetachBankAccount {
+    success: Boolean
+}
+
 type Query {
-    user: User!
+    balance: Int!
+    bankAccount: BankAccount,
     transactions(size: Int, from: Int): Transactions
 }
 
@@ -44,6 +47,12 @@ type Mutation {
         note: String
     ): Transaction!
     prepareCheckout(amount: Int!): Checkout!
+    attachBankAccount(
+        accountHolderName: String!
+        country: String!
+        IBAN: String!
+    ): BankAccount!
+    detachBankAccount: DetachBankAccount
 }
 
 schema {

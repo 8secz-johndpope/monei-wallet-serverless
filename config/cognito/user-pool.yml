@@ -2,6 +2,7 @@ Type: AWS::Cognito::UserPool
 Properties:
   UserPoolName: ${self:custom.resourcesPrefix}-userPool
   UsernameAttributes: [phone_number]
+  AutoVerifiedAttributes: [email]
   Schema:
     - Name: phone_number
       AttributeDataType: String
@@ -17,6 +18,9 @@ Properties:
       AttributeDataType: String
       Mutable: true
     - Name: registration_ids
+      AttributeDataType: String
+      Mutable: true
+    - Name: bank_account_id
       AttributeDataType: String
       Mutable: true
   MfaConfiguration: OFF

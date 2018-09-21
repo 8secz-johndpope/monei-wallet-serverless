@@ -10,6 +10,7 @@ Properties:
     - phone_number_verified
     - email_verified
     - custom:eth_address
+    - custom:bank_account_id
   WriteAttributes:
     - email
     - name

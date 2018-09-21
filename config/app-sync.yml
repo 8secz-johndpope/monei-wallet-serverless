@@ -8,10 +8,10 @@ userPoolConfig:
   userPoolId: ${self:resources.Outputs.UserPoolId.Value}
 mappingTemplates:
   - dataSource: balanceResolver
-    type: User
+    type: Query
     field: balance
     request: "lambda-request.json"
-    response: "response.json"
+    response: "plain-response.txt"
 
   - dataSource: newTransaction
     type: Mutation
@@ -25,17 +25,29 @@ mappingTemplates:
     request: "lambda-request.json"
     response: "response.json"
 
+  - dataSource: attachBankAccount
+    type: Mutation
+    field: attachBankAccount
+    request: "lambda-request.json"
+    response: "response.json"
+
+  - dataSource: detachBankAccount
+    type: Mutation
+    field: detachBankAccount
+    request: "lambda-request.json"
+    response: "response.json"
+
+  - dataSource: getBankAccount
+    type: Query
+    field: bankAccount
+    request: "lambda-request.json"
+    response: "response.json"
+
   - dataSource: elasticSearch
     type: Query
     field: transactions
     request: "transactions-request.json"
     response: "transactions-response.json"
-
-  - dataSource: passThrough
-    type: Query
-    field: user
-    request: "user-request.json"
-    response: "response.json"
 
 schema: src/schema.graphql
 
@@ -54,6 +66,24 @@ dataSources:
     name: newTransaction
     config:
       lambdaFunctionArn: { Fn::GetAtt: ['NewTransactionLambdaFunction', 'Arn'] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+
+  - type: AWS_LAMBDA
+    name: attachBankAccount
+    config:
+      lambdaFunctionArn: { Fn::GetAtt: ['AttachBankAccountLambdaFunction', 'Arn'] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+
+  - type: AWS_LAMBDA
+    name: detachBankAccount
+    config:
+      lambdaFunctionArn: { Fn::GetAtt: ['DetachBankAccountLambdaFunction', 'Arn'] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+
+  - type: AWS_LAMBDA
+    name: getBankAccount
+    config:
+      lambdaFunctionArn: { Fn::GetAtt: ['GetBankAccountLambdaFunction', 'Arn'] }
       serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
 
   - type: AWS_LAMBDA

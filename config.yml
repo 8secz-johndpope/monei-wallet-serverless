@@ -1,5 +1,4 @@
 default: &default
-  <<: *default
   REGION: eu-west-1
   INFURA_URL: https://ropsten.infura.io/z17uvrWh81KguvHww5ze
   TOKEN_ADDRESS: "0xdc917bfdf32b41b1a11d0d3a50f201604638639c"
@@ -8,6 +7,8 @@ default: &default
   MONEI_CREDENTIALS_KEY: moneiwallet/MONEI_CREDENTIALS
   MONEI_API_URL: https://test.oppwa.com
   ENCRYPT_PASSWORD_KEY: moneiwallet/ENCRYPT_PASSWORD
+  TRANSFERWISE_CREDENTIALS_KEY: moneiwallet/TRANSFERWISE_CREDENTIALS
+  TRANSFERWISE_API_URL: https://api.sandbox.transferwise.tech
   IOT_ENDPOINT: a1qrexblodk5ps.iot.eu-west-1.amazonaws.com
   ES_INSTANCE_TYPE: t2.small.elasticsearch
   ES_INSTANCE_COUNT: 1
