@@ -75,10 +75,10 @@ dataSources:
       serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
 
   - type: AWS_LAMBDA
-      name: newWithdrawal
-      config:
-        lambdaFunctionArn: { Fn::GetAtt: ['NewWithdrawalLambdaFunction', 'Arn'] }
-        serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+    name: newWithdrawal
+    config:
+      lambdaFunctionArn: { Fn::GetAtt: ['NewWithdrawalLambdaFunction', 'Arn'] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
 
   - type: AWS_LAMBDA
     name: attachBankAccount
