@@ -1,0 +1,27 @@
+name: "WithdrawTokensSM-${self:service}-${opt:stage}"
+definition:
+  Comment: Grants free tokens to a new user
+  StartAt: WaitTransactionState
+  States:
+    ChoiceState:
+      Type: Choice
+      Choices:
+      - Variable: "$.status"
+        StringEquals: pending
+        Next: WaitTransactionState
+      - Not:
+          Variable: "$.status"
+          StringEquals: pending
+        Next: TransferFiatState
+    WaitTransactionState:
+      Type: Wait
+      Seconds: 10
+      Next: CheckTransactionState
+    CheckTransactionState:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkTransaction"
+      Next: ChoiceState
+    TransferFiatState:
+      Type: Task
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-transferFiat"
+      End: true

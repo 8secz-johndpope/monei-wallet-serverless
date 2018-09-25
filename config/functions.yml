@@ -1,3 +1,5 @@
+# Steps
+
 checkTransaction:
   handler: src/steps/checkTransaction.handler
   iamRoleStatements:
@@ -32,6 +34,12 @@ transferTokens:
     - Effect: Allow
       Action: dynamodb:PutItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
+
+transferFiat:
+  handler: src/steps/newWithdrawal.handler
+  iamRoleStatements: []
+
+# Hooks
 
 postAuthentication:
   handler: src/hooks/postAuthentication.handler
@@ -80,6 +88,71 @@ verifyAuthChallenge:
       Action: states:StartExecution
       Resource: ${self:resources.Outputs.TransferTokensSM.Value}
 
+completeCheckout:
+  handler: src/hooks/completeCheckout.handler
+  events:
+  - http:
+      path: complete_checkout
+      method: get
+      cors: true
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+    - cognito-idp:AdminUpdateUserAttributes
+    - cognito-idp:AdminGetUser
+    Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
+  - Effect: Allow
+    Action: secretsmanager:GetSecretValue
+    Resource:
+    - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
+    - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
+  - Effect: Allow
+    Action: states:StartExecution
+    Resource: ${self:resources.Outputs.CheckTransactionSM.Value}
+  - Effect: Allow
+    Action: dynamodb:PutItem
+    Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
+
+attachUserPolicy:
+  handler: src/hooks/attachUserPolicy.handler
+  events:
+  - http:
+      path: attach_policy
+      method: post
+      cors: true
+      authorizer: aws_iam
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+    - iot:AttachPrincipalPolicy
+    - iot:DetachPrincipalPolicy
+    - iot:CreatePolicy
+    Resource: "*"
+
+indexTransactions:
+  handler: src/hooks/indexTransactions.handler
+  events:
+  - stream:
+      type: dynamodb
+      startingPosition: LATEST
+      arn: { Fn::GetAtt: [ 'TransactionsTable', 'StreamArn' ] }
+      batchSize: 1
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-indexTransactionsIAM
+  iamRoleStatements:
+  - Effect: Allow
+    Action: iot:Publish
+    Resource: "*"
+  - Effect: Allow
+    Action:
+    - es:ESHttpPost
+    - es:ESHttpDelete
+    - es:ESHttpPut
+    - es:ESHttpHead
+    Resource: "*"
+
+
+# Resolvers
+
 getBalance:
   handler: src/resolvers/getBalance.handler
   iamRoleStatements: []
@@ -99,6 +172,19 @@ newTransaction:
     - Effect: Allow
       Action: dynamodb:PutItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
+
+newWithdrawal:
+  handler: src/resolvers/newWithdrawal.handler
+  iamRoleStatements:
+  - Effect: Allow
+    Action: states:StartExecution
+    Resource: ${self:resources.Outputs.WithdrawTokensSM.Value}
+  - Effect: Allow
+    Action: secretsmanager:GetSecretValue
+    Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
+  - Effect: Allow
+    Action: dynamodb:PutItem
+    Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
 prepareCheckout:
   handler: src/resolvers/prepareCheckout.handler
@@ -141,65 +227,3 @@ detachBankAccount:
   - Effect: Allow
     Action: secretsmanager:GetSecretValue
     Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.TRANSFERWISE_CREDENTIALS_KEY}-*"
-
-completeCheckout:
-  handler: src/hooks/completeCheckout.handler
-  events:
-    - http:
-        path: complete_checkout
-        method: get
-        cors: true
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - cognito-idp:AdminUpdateUserAttributes
-        - cognito-idp:AdminGetUser
-      Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
-    - Effect: Allow
-      Action: secretsmanager:GetSecretValue
-      Resource:
-        - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
-        - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
-    - Effect: Allow
-      Action: states:StartExecution
-      Resource: ${self:resources.Outputs.CheckTransactionSM.Value}
-    - Effect: Allow
-      Action: dynamodb:PutItem
-      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
-
-attachUserPolicy:
-  handler: src/hooks/attachUserPolicy.handler
-  events:
-    - http:
-        path: attach_policy
-        method: post
-        cors: true
-        authorizer: aws_iam
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - iot:AttachPrincipalPolicy
-        - iot:DetachPrincipalPolicy
-        - iot:CreatePolicy
-      Resource: "*"
-
-indexTransactions:
-  handler: src/hooks/indexTransactions.handler
-  events:
-    - stream:
-        type: dynamodb
-        startingPosition: LATEST
-        arn: { Fn::GetAtt: [ 'TransactionsTable', 'StreamArn' ] }
-        batchSize: 1
-  iamRoleStatementsName: ${self:custom.resourcesPrefix}-indexTransactionsIAM
-  iamRoleStatements:
-    - Effect: Allow
-      Action: iot:Publish
-      Resource: "*"
-    - Effect: Allow
-      Action:
-        - es:ESHttpPost
-        - es:ESHttpDelete
-        - es:ESHttpPut
-        - es:ESHttpHead
-      Resource: "*"
