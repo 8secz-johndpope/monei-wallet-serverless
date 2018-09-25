@@ -1,5 +1,5 @@
-const Transaction = require('./Transaction');
-const dynamodb = require('serverless-dynamodb-client');
+import Transaction from './Transaction';
+import dynamodb from 'serverless-dynamodb-client';
 
 jest.mock('serverless-dynamodb-client');
 

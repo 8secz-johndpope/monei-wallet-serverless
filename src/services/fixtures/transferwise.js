@@ -1,4 +1,4 @@
-exports.getAccessTokenRes = {
+export const getAccessTokenRes = {
   access_token: '4c0f5eaa-14e1-4019-9013-dfe9a5496f36',
   token_type: 'bearer',
   refresh_token: 'b90eddbb-d1e5-4e99-9bc7-c7994620bccb',
@@ -6,18 +6,18 @@ exports.getAccessTokenRes = {
   scope: 'transfers'
 };
 
-exports.getAccessTokenError = {
+export const getAccessTokenError = {
   error: 'invalid_token',
   error_description: '8ac85ca4-6759-4dd0-9f68-6db722f33722'
 };
 
-exports.createAccountReq = {
+export const createAccountReq = {
   accountHolderName: 'Joe British',
   country: 'ES',
   IBAN: 'ES1020903200500041045040'
 };
 
-exports.createAccountRes = {
+export const createAccountRes = {
   id: 14177246,
   business: 256,
   profile: 256,
@@ -76,7 +76,7 @@ exports.createAccountRes = {
   user: 5461222
 };
 
-exports.createQuoteRes = {
+export const createQuoteRes = {
   id: 1291658,
   source: 'EUR',
   target: 'EUR',
@@ -96,9 +96,9 @@ exports.createQuoteRes = {
   ofSourceAmount: true
 };
 
-exports.createTransferReq = {targetAccount: 14177246, amount: 1};
+export const createTransferReq = {targetAccount: 14177246, amount: 1};
 
-exports.createTransferRes = {
+export const createTransferRes = {
   id: 433003,
   user: 5461222,
   targetAccount: 14177246,
@@ -121,4 +121,8 @@ exports.createTransferRes = {
   customerTransactionId: 'cd942384-c1d8-4b0f-9b30-772dadc94741'
 };
 
-exports.confirmTransferRes = {type: 'BALANCE', status: 'COMPLETED', errorCode: null};
+export const confirmTransferRes = {
+  type: 'BALANCE',
+  status: 'COMPLETED',
+  errorCode: null
+};

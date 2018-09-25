@@ -1,6 +1,6 @@
-const axios = require('axios');
-const qs = require('qs');
-const uuidv4 = require('uuid/v4');
+import axios from 'axios';
+import qs from 'qs';
+import uuidv4 from 'uuid/v4';
 
 const responseHandler = response => response.data;
 
@@ -112,9 +112,12 @@ class TransferWise {
 
   async transfer({targetAccount, amount}) {
     const quote = await this.createQuote(amount);
-    const transfer = await this.createTransfer({targetAccount, quote: quote.id});
+    const transfer = await this.createTransfer({
+      targetAccount,
+      quote: quote.id
+    });
     return this.confirmTransfer(transfer.id);
   }
 }
 
-module.exports = TransferWise;
+export default TransferWise;

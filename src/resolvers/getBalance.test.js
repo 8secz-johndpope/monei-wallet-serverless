@@ -1,4 +1,5 @@
-const getBalance = require('./getBalance').handler;
+import {handler as getBalance} from './getBalance';
+import {_balanceShouldReturnError} from '../services/etherium';
 
 jest.mock('../services/etherium');
 
@@ -12,7 +13,7 @@ test('getBalance success', async () => {
       }
     }
   };
-  require('../services/etherium')._balanceShouldReturnError(false);
+  _balanceShouldReturnError(false);
   const response = await getBalance(event);
   expect(response.statusCode).toEqual(200);
   expect(response.body).toEqual(JSON.stringify({balance: 100}));
@@ -28,7 +29,7 @@ test("should handle error when getting user's balance", async () => {
       }
     }
   };
-  require('../services/etherium')._balanceShouldReturnError(true);
+  _balanceShouldReturnError(true);
   const response = await getBalance(event);
   expect(response.statusCode).toEqual(500);
   expect(response.body).toEqual(JSON.stringify({}));

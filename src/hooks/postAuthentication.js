@@ -1,6 +1,8 @@
-const {web3} = require('../services/etherium');
-const {getSecretValue} = require('../services/secrets');
-const AWS = require('aws-sdk');
+import {web3} from '../services/etherium';
+
+import {getSecretValue} from '../services/secrets';
+
+import AWS from 'aws-sdk';
 
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const stepFunctions = new AWS.StepFunctions();
@@ -35,7 +37,7 @@ const stepFunctions = new AWS.StepFunctions();
  *
  * @returns {Promise<Object>} - auth event
  */
-exports.handler = async event => {
+module.exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
   // skip registration if user already has eth address

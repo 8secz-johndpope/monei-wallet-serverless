@@ -1,5 +1,5 @@
-exports.parseBoolean = str => {
+export function parseBoolean(str) {
   if (str === 'true' || str === '') return true;
   if (str === 'false') return false;
   return str;
-};
+}

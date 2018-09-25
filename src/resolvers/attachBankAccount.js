@@ -1,11 +1,12 @@
-const TransferWise = require('../services/transferwise');
-const {getSecretValue} = require('../services/secrets');
-const Cognito = require('../services/cognito');
+import TransferWise from '../services/transferwise';
+import {getSecretValue} from '../services/secrets';
+
+import Cognito from '../services/cognito';
 
 const cognito = new Cognito();
 
 // creates transferwise account
-exports.handler = async event => {
+module.exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
   const {accountHolderName, country, IBAN} = event.arguments;
@@ -15,7 +16,11 @@ exports.handler = async event => {
     const options = JSON.parse(creds);
 
     const client = new TransferWise(options);
-    const account = await client.createAccount({accountHolderName, country, IBAN});
+    const account = await client.createAccount({
+      accountHolderName,
+      country,
+      IBAN
+    });
 
     console.log(JSON.stringify(account, null, 2));
 

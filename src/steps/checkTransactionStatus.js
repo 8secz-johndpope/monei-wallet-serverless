@@ -1,6 +1,6 @@
-const {web3} = require('../services/etherium');
+import {web3} from '../services/etherium';
 
-exports.handler = async data => {
+module.exports.handler = async data => {
   // checks transaction receipt form the blockchain
   const receipt = await web3.eth.getTransactionReceipt(data.transactionHash);
 

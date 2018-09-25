@@ -31,7 +31,7 @@
  *     "UserStatus": "CONFIRMED"
  * }
  */
-exports.normalizeUser = user => {
+export function normalizeUser(user) {
   const result = {
     status: user.UserStatus,
     enabled: user.Enabled
@@ -41,4 +41,4 @@ exports.normalizeUser = user => {
     result[Name] = Value;
   });
   return result;
-};
+}

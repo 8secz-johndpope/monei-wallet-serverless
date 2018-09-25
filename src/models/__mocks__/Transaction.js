@@ -11,4 +11,4 @@ Transaction._findByAddressShouldReturnError = value => {
   }
 };
 
-module.exports = Transaction;
+export default Transaction;

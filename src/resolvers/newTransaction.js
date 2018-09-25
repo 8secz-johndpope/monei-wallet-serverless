@@ -1,13 +1,15 @@
-const {withMasterAccount} = require('../services/etherium');
-const Transaction = require('../models/Transaction');
-const {normalizeUser} = require('../lib/cognitoUtils');
-const AWS = require('aws-sdk');
+import {withMasterAccount} from '../services/etherium';
+
+import Transaction from '../models/Transaction';
+import {normalizeUser} from '../lib/cognitoUtils';
+
+import AWS from 'aws-sdk';
 
 const stepFunctions = new AWS.StepFunctions();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
 // creates new transaction for a user
-exports.handler = async event => {
+module.exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
   const addressFrom = event.identity.claims['custom:eth_address'];
   const amount = event.arguments.amount;

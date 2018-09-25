@@ -10,22 +10,26 @@ const DEFAULT_HEADERS = {
  * @param headers
  * @returns {{statusCode: number, headers: {'Access-Control-Allow-Origin': string, 'Access-Control-Allow-Credentials': boolean}, body: string}}
  */
-const response = (body, {statusCode = 500, headers} = {}) => ({
+export const response = (body, {statusCode = 500, headers} = {}) => ({
   statusCode,
   headers: {...DEFAULT_HEADERS, ...headers},
   body: JSON.stringify(body)
 });
 
-exports.respinse = response;
+export function success(body, {statusCode = 200, headers} = {}) {
+  return response(body, {statusCode, headers});
+}
 
-exports.success = (body, {statusCode = 200, headers} = {}) => response(body, {statusCode, headers});
+export function fail(error) {
+  return response(error, {statusCode: error.statusCode});
+}
 
-exports.fail = error => response(error, {statusCode: error.statusCode});
-
-exports.redirect = url => ({
-  statusCode: 302,
-  headers: {
-    ...DEFAULT_HEADERS,
-    Location: url
-  }
-});
+export function redirect(url) {
+  return {
+    statusCode: 302,
+    headers: {
+      ...DEFAULT_HEADERS,
+      Location: url
+    }
+  };
+}

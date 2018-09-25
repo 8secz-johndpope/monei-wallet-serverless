@@ -1,7 +1,8 @@
-const authy = require('authy')(process.env.AUTHY_API_KEY);
-const {promisify} = require('es6-promisify');
-const AWS = require('aws-sdk');
+import authy0 from 'authy';
+import {promisify} from 'es6-promisify';
+import AWS from 'aws-sdk';
 
+const authy = authy0(process.env.AUTHY_API_KEY);
 const provider = new AWS.CognitoIdentityServiceProvider();
 const stepFunctions = new AWS.StepFunctions();
 const verificationCheck = promisify(authy.phones().verification_check);
@@ -9,7 +10,7 @@ const verificationCheck = promisify(authy.phones().verification_check);
 // tokens stored in the contract as integers, so amount = value * 10 ** decimals
 const FREE_TOKENS_AMOUNT = 200;
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
   const user = event.request.userAttributes;

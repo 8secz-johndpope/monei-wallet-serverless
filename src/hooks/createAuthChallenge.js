@@ -1,11 +1,13 @@
-const authy = require('authy')(process.env.AUTHY_API_KEY);
-const {PhoneNumberUtil} = require('google-libphonenumber');
-const {promisify} = require('es6-promisify');
+import authy0 from 'authy';
+import {PhoneNumberUtil} from 'google-libphonenumber';
+import {promisify} from 'es6-promisify';
+
+const authy = authy0(process.env.AUTHY_API_KEY);
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 const verificationStart = promisify(authy.phones().verification_start);
 
-exports.handler = async event => {
+module.exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
   // skip challenge if user has active session
