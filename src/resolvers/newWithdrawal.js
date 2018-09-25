@@ -1,22 +1,29 @@
 const {withMasterAccount} = require('../services/etherium');
 const Transaction = require('../models/Transaction');
 const AWS = require('aws-sdk');
+const Cognito = require('../services/cognito');
 
+const cognito = new Cognito();
 const stepFunctions = new AWS.StepFunctions();
 
 // creates new transaction for a user
 exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
-  const addressFrom = event.identity.claims['custom:eth_address'];
   const amount = event.arguments.amount;
+
+  const user = await cognito.getUser(event.identity.username);
+  console.log(JSON.stringify(user, null, 2));
+
+  if (!user.bank_account_id) {
+    throw new Error('No attached bank account');
+  }
 
   // initialize web3 with master credentials from mnemonic
   const {web3, token, masterAddress} = await withMasterAccount();
-  let fromInfo = addressFrom;
 
   const [balance, allowance] = await Promise.all([
-    token.methods.balanceOf(addressFrom).call(),
-    token.methods.allowance(addressFrom, web3.eth.defaultAccount).call()
+    token.methods.balanceOf(user.eth_address).call(),
+    token.methods.allowance(user.eth_address, web3.eth.defaultAccount).call()
   ]);
 
   // do not continue if balance is less than transferring amount
@@ -30,7 +37,7 @@ exports.handler = async event => {
   }
 
   // create a transaction to transfer tokens
-  const tokenTransaction = token.methods.transferFrom(addressFrom, masterAddress, amount);
+  const tokenTransaction = token.methods.transferFrom(user.eth_address, masterAddress, amount);
 
   // estimate transaction gas
   const gasNeeded = await tokenTransaction.estimateGas({
@@ -44,8 +51,8 @@ exports.handler = async event => {
       if (error) reject(error);
       Transaction.create({
         id: hash,
-        from: addressFrom,
-        fromInfo,
+        from: user.eth_address,
+        fromInfo: user.eth_address,
         to: masterAddress,
         toInfo: 'MONEI Coins exchange',
         amount,
@@ -58,7 +65,10 @@ exports.handler = async event => {
   await stepFunctions
     .startExecution({
       stateMachineArn: process.env.WITHDRAW_TOKENS_SM,
-      input: JSON.stringify(trx)
+      input: JSON.stringify({
+        transaction: trx,
+        bankAccountId: user.bank_account_id
+      })
     })
     .promise();
 

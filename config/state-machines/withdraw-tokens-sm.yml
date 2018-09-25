@@ -15,11 +15,11 @@ definition:
         Next: TransferFiatState
     WaitTransactionState:
       Type: Wait
-      Seconds: 10
+      Seconds: 30
       Next: CheckTransactionState
     CheckTransactionState:
       Type: Task
-      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkTransaction"
+      Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-checkWithdrawalTransaction"
       Next: ChoiceState
     TransferFiatState:
       Type: Task

@@ -7,6 +7,13 @@ checkTransaction:
       Action: dynamodb:UpdateItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
+checkWithdrawalTransaction:
+  handler: src/steps/checkWithdrawalTransaction.handler
+  iamRoleStatements:
+  - Effect: Allow
+    Action: dynamodb:UpdateItem
+    Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
+
 checkRequiredBalance:
   handler: src/steps/checkRequiredBalance.handler
   iamRoleStatements:
@@ -176,6 +183,9 @@ newTransaction:
 newWithdrawal:
   handler: src/resolvers/newWithdrawal.handler
   iamRoleStatements:
+  - Effect: Allow
+    Action: cognito-idp:AdminGetUser
+    Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
   - Effect: Allow
     Action: states:StartExecution
     Resource: ${self:resources.Outputs.WithdrawTokensSM.Value}
