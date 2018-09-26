@@ -50,7 +50,6 @@ type Mutation {
     prepareCheckout(amount: Int!): Checkout!
     attachBankAccount(
         accountHolderName: String!
-        country: String!
         IBAN: String!
     ): BankAccount!
     detachBankAccount: DetachBankAccount

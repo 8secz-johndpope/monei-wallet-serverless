@@ -62,7 +62,6 @@ class TransferWise {
     const account = {
       profile: this.profile,
       accountHolderName: data.accountHolderName,
-      country: data.country,
       currency: 'EUR',
       type: 'iban',
       details: {
