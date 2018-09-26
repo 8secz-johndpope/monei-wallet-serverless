@@ -28,7 +28,7 @@ exports.handler = async event => {
       id: account.id,
       accountHolderName: account.accountHolderName,
       country: account.country,
-      IBAN: account.details.IBAN
+      IBAN: account.details.IBAN.replace(/^.{20}/g, '****')
     };
   } catch (error) {
     console.log(JSON.stringify(error, null, 2));
