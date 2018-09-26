@@ -1,11 +1,11 @@
-import AWS from 'aws-sdk';
-import PasswordGenerator from 'strict-password-generator';
-import {fail, success} from '../lib/apiUtils';
+const AWS = require('aws-sdk');
+const PasswordGenerator = require('strict-password-generator').default;
+const {success, fail} = require('../lib/apiUtils');
 
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const passwordGenerator = new PasswordGenerator();
 
-module.exports.handler = async event => {
+exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
   const {username, name} = JSON.parse(event.body);
 

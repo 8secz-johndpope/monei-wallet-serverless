@@ -12,32 +12,25 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "source-map-support": "^0.5.9",
     "authy": "^1.4.0",
     "aws-sdk": "^2.321.0",
     "axios": "^0.18.0",
+    "dotenv": "^6.0.0",
+    "dynamodb-data-types": "^3.0.1",
     "elasticsearch": "^15.1.1",
     "es6-promisify": "^6.0.0",
     "google-libphonenumber": "^3.1.14",
     "http-aws-es": "^6.0.0",
     "qs": "^6.5.2",
+    "serverless-dynamodb-client": "^0.0.2",
     "strict-password-generator": "^1.1.1",
     "truffle-hdwallet-provider": "0.0.6",
     "uniqid": "^5.0.3",
     "uuid": "^3.3.2",
-    "web3": "^1.0.0-beta.36",
-    "serverless-dynamodb-client": "^0.0.2",
-    "dynamodb-data-types": "^3.0.1"
+    "web3": "^1.0.0-beta.36"
   },
   "devDependencies": {
-    "babel-plugin-source-map-support": "^2.0.1",
-    "@babel/core": "^7.1.0",
-    "@babel/plugin-transform-runtime": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-stage-3": "^7.0.0",
     "axios-mock-adapter": "^1.15.0",
-    "babel-loader": "^8.0.2",
-    "dotenv": "^6.0.0",
     "eslint": "^5.6.0",
     "eslint-config-microapps": "^1.0.2",
     "eslint-config-prettier": "^3.1.0",
@@ -54,10 +47,7 @@
     "serverless-plugin-stage-variables": "^1.8.0",
     "serverless-pseudo-parameters": "^2.2.0",
     "serverless-stack-output": "^0.2.3",
-    "serverless-step-functions": "^1.7.2",
-    "serverless-webpack": "^5.2.0",
-    "webpack": "^4.20.1",
-    "webpack-node-externals": "^1.7.2"
+    "serverless-step-functions": "^1.7.2"
   },
   "jest": {
     "testEnvironment": "node",

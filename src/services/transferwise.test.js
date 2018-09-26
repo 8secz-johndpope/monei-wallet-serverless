@@ -1,7 +1,7 @@
-import TransferWise from './transferwise';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
-import * as fixtures from './fixtures/transferwise';
+const TransferWise = require('./transferwise');
+const axios = require('axios');
+const MockAdapter = require('axios-mock-adapter');
+const fixtures = require('./fixtures/transferwise');
 
 const options = {
   clientId: 'moeni',

@@ -1,7 +1,6 @@
-import AWS from 'aws-sdk';
-import {fail, success} from '../lib/apiUtils';
-
+const AWS = require('aws-sdk');
 const iot = new AWS.Iot();
+const {success, fail} = require('../lib/apiUtils');
 
 /**
  * Attaches iot policy to cognitoIdentityId.
@@ -9,7 +8,7 @@ const iot = new AWS.Iot();
  * @param event
  * @returns {Promise<*>}
  */
-module.exports.handler = async event => {
+exports.handler = async event => {
   try {
     await iot
       .attachPrincipalPolicy({

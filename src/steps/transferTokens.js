@@ -1,8 +1,7 @@
-import {withMasterAccount} from '../services/etherium';
+const {withMasterAccount} = require('../services/etherium');
+const Transaction = require('../models/Transaction');
 
-import Transaction from '../models/Transaction';
-
-module.exports.handler = async ({address, amount, note}) => {
+exports.handler = async ({address, amount, note}) => {
   const {token, masterAddress} = await withMasterAccount();
 
   // create a transaction to transfer tokens

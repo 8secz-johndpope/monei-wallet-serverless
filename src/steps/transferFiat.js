@@ -1,11 +1,10 @@
-import TransferWise from '../services/transferwise';
-import {getSecretValue} from '../services/secrets';
-
-import Cognito from '../services/cognito';
+const TransferWise = require('../services/transferwise');
+const {getSecretValue} = require('../services/secrets');
+const Cognito = require('../services/cognito');
 
 const cognito = new Cognito();
 
-module.exports.handler = async data => {
+exports.handler = async data => {
   JSON.stringify(data, null, 2);
 
   try {

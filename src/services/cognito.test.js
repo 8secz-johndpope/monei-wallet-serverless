@@ -1,5 +1,5 @@
-import Cognito from './cognito';
-import * as fixtures from './fixtures/cognito';
+const Cognito = require('./cognito');
+const fixtures = require('./fixtures/cognito');
 
 describe('Cognito', () => {
   it('should normalize user data', () => {

@@ -1,18 +1,13 @@
-import axios from 'axios';
-import qs from 'qs';
-import {getSecretValue} from '../services/secrets';
-
-import {fail, redirect} from '../lib/apiUtils';
-
-import {getDescription, isSuccessful} from '../services/monei';
-
-import {masterAddress, withMasterAccount} from '../services/etherium';
-
-import Transaction from '../models/Transaction';
-import {normalizeUser} from '../lib/cognitoUtils';
-
-import AWS from 'aws-sdk';
-import uniqid from 'uniqid';
+const axios = require('axios');
+const qs = require('qs');
+const {getSecretValue} = require('../services/secrets');
+const {redirect, fail} = require('../lib/apiUtils');
+const {isSuccessful, getDescription} = require('../services/monei');
+const {withMasterAccount, masterAddress} = require('../services/etherium');
+const Transaction = require('../models/Transaction');
+const {normalizeUser} = require('../lib/cognitoUtils');
+const AWS = require('aws-sdk');
+const uniqid = require('uniqid');
 
 const stepFunctions = new AWS.StepFunctions();
 const cognito = new AWS.CognitoIdentityServiceProvider();
@@ -78,7 +73,7 @@ const savePaymentMethod = async ({username, registrationId}) => {
   return cognito.adminUpdateUserAttributes(params).promise();
 };
 
-module.exports.handler = async event => {
+exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
   const credentials = await getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
   const {resourcePath} = event.queryStringParameters;

@@ -1,11 +1,10 @@
-import connectionClass from 'http-aws-es';
-import elasticsearch from 'elasticsearch';
-import {AttributeValue as attr} from 'dynamodb-data-types';
-import {notifyTrxCreated, notifyTrxUpdated} from '../services/userNotifier';
-
-import AWS from 'aws-sdk';
+const connectionClass = require('http-aws-es');
+const elasticsearch = require('elasticsearch');
+const attr = require('dynamodb-data-types').AttributeValue;
+const {notifyTrxCreated, notifyTrxUpdated} = require('../services/userNotifier');
 
 const elasticSearch = process.env.ELASTICSEARCH;
+let AWS = require('aws-sdk');
 const credentials = new AWS.EnvironmentCredentials('AWS');
 
 const esClient = new elasticsearch.Client({
@@ -62,7 +61,7 @@ const indexDocument = (index, indexType, doc) => {
   }
 };
 
-module.exports.handler = async event => {
+exports.handler = async event => {
   const indexing = event.Records.map(rec => indexDocument('transactions', 'transactions', rec));
   return Promise.all(indexing);
 };

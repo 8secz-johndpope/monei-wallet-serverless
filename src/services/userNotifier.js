@@ -1,8 +1,7 @@
-import AWS from 'aws-sdk';
-
+const AWS = require('aws-sdk');
 const iot = new AWS.IotData({endpoint: process.env.IOT_ENDPOINT});
 
-export const notifyByAddress = (address, data) => {
+const notifyByAddress = (address, data) => {
   return iot.publish({topic: address, payload: JSON.stringify(data)}).promise();
 };
 
@@ -11,7 +10,7 @@ export const notifyByAddress = (address, data) => {
  * @param trx - dynamoDB transaction
  * @returns {Promise<[any]>}
  */
-export const notifyTrxCreated = trx => {
+const notifyTrxCreated = trx => {
   const event = {
     type: 'TRX_CREATED',
     payload: {...trx, income: true}
@@ -24,7 +23,7 @@ export const notifyTrxCreated = trx => {
  * @param trx - dynamoDB transaction
  * @returns {Promise<[any]>}
  */
-export const notifyTrxUpdated = trx => {
+const notifyTrxUpdated = trx => {
   return Promise.all([
     notifyByAddress(trx.from, {
       type: 'TRX_UPDATED',
@@ -35,4 +34,10 @@ export const notifyTrxUpdated = trx => {
       payload: {...trx, income: true}
     })
   ]);
+};
+
+module.exports = {
+  notifyByAddress,
+  notifyTrxCreated,
+  notifyTrxUpdated
 };

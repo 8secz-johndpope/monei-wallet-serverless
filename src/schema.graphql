@@ -34,7 +34,7 @@ type DetachBankAccount {
 
 type Query {
     balance: Int!
-    bankAccount: BankAccount
+    bankAccount: BankAccount,
     transactions(size: Int, from: Int): Transactions
 }
 

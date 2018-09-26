@@ -12,10 +12,10 @@ plugins:
   - serverless-stack-output
   - serverless-appsync-plugin
   - serverless-iam-roles-per-function
-  - serverless-webpack
 
 package:
-  individually: true
+  exclude:
+    - node_modules/aws-sdk
 
 provider:
   name: aws
@@ -51,11 +51,6 @@ provider:
   cfLogs: true
 
 custom:
-  webpack:
-    webpackConfig: ./webpack.config.js
-    includeModules: true
-    packager: yarn
-
   defaultStage: develop
   currentStage: ${opt:stage, self:custom.defaultStage}
   resourcesPrefix: ${self:service}-${self:custom.currentStage}

@@ -1,12 +1,11 @@
-import axios from 'axios';
-import qs from 'qs';
-import {getSecretValue} from '../services/secrets';
-
-import Cognito from '../services/cognito';
+const axios = require('axios');
+const qs = require('qs');
+const {getSecretValue} = require('../services/secrets');
+const Cognito = require('../services/cognito');
 
 const cognito = new Cognito();
 
-module.exports.handler = async event => {
+exports.handler = async event => {
   const amount = (event.arguments.amount / 100).toFixed(2);
   const getCredentials = getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
   const getUser = cognito.getUser(event.identity.claims['phone_number']);

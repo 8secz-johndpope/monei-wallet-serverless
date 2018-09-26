@@ -1,6 +1,6 @@
-import {EventEmitter} from 'events';
-
 const etherium = jest.genMockFromModule('../etherium');
+const EventEmitter = require('events').EventEmitter;
+
 let balanceShouldReturn = 100;
 
 const callStub = jest.fn();
@@ -51,4 +51,4 @@ etherium.web3 = {
   }
 };
 
-export default etherium;
+module.exports = etherium;

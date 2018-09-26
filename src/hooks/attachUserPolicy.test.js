@@ -1,5 +1,5 @@
-import AWS from 'aws-sdk';
-import attachUserPolicy from './attachUserPolicy';
+const AWS = require('aws-sdk');
+const attachUserPolicy = require('./attachUserPolicy').handler;
 
 jest.mock('aws-sdk');
 

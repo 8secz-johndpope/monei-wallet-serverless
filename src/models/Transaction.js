@@ -1,4 +1,4 @@
-import dynamoDb from 'serverless-dynamodb-client';
+const dynamoDb = require('serverless-dynamodb-client');
 
 const TABLE_NAME = process.env.TRANSACTIONS_TABLE;
 
@@ -91,7 +91,7 @@ const findByAddress = async address => {
   return items.sort((a, b) => a.createdAt < b.createdAt);
 };
 
-export default {
+module.exports = {
   create: createTransaction,
   findByAddress,
   batchUpdate,

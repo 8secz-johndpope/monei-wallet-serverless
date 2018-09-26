@@ -1,4 +1,4 @@
-export const userData = {
+exports.userData = {
   Username: '0e9ddbee-82d8-49a2-bdb8-aaff0d854596',
   Attributes: [
     {
@@ -28,7 +28,7 @@ export const userData = {
   UserStatus: 'CONFIRMED'
 };
 
-export const userNormalizedData = {
+exports.userNormalizedData = {
   enabled: true,
   eth_address: '0xDCE4180a1dE57397e477158DE2889E5cE6DEEb89',
   eth_secret_key: '...',

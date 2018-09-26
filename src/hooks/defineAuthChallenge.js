@@ -1,4 +1,4 @@
-module.exports.handler = async event => {
+exports.handler = async event => {
   if (!event.request.session || event.request.session.length === 0) {
     // If we don't have a session or it is empty then send a CUSTOM_CHALLENGE
     event.response.challengeName = 'CUSTOM_CHALLENGE';

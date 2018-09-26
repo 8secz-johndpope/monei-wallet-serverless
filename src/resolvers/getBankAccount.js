@@ -1,12 +1,11 @@
-import TransferWise from '../services/transferwise';
-import {getSecretValue} from '../services/secrets';
-
-import Cognito from '../services/cognito';
+const TransferWise = require('../services/transferwise');
+const {getSecretValue} = require('../services/secrets');
+const Cognito = require('../services/cognito');
 
 const cognito = new Cognito();
 
 // get transferwise account for a user
-module.exports.handler = async event => {
+exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
   try {

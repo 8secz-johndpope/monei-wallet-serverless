@@ -1,5 +1,5 @@
-import AWS from 'aws-sdk';
-import {parseBoolean} from '../lib/utils';
+const AWS = require('aws-sdk');
+const {parseBoolean} = require('../lib/utils');
 
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
@@ -67,4 +67,4 @@ class Cognito {
   }
 }
 
-export default Cognito;
+module.exports = Cognito;
