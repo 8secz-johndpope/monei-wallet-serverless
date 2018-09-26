@@ -5,3 +5,4 @@ node_modules
 package
 coverage
 /cf-output.yaml
+/test.js

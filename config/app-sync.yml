@@ -19,6 +19,12 @@ mappingTemplates:
     request: "lambda-request.json"
     response: "response.json"
 
+  - dataSource: newWithdrawal
+    type: Mutation
+    field: newWithdrawal
+    request: "lambda-request.json"
+    response: "response.json"
+
   - dataSource: prepareCheckout
     type: Mutation
     field: prepareCheckout
@@ -66,6 +72,12 @@ dataSources:
     name: newTransaction
     config:
       lambdaFunctionArn: { Fn::GetAtt: ['NewTransactionLambdaFunction', 'Arn'] }
+      serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
+
+  - type: AWS_LAMBDA
+    name: newWithdrawal
+    config:
+      lambdaFunctionArn: { Fn::GetAtt: ['NewWithdrawalLambdaFunction', 'Arn'] }
       serviceRoleArn: { Fn::GetAtt: ['AppSyncLambdaServiceRole', 'Arn'] }
 
   - type: AWS_LAMBDA

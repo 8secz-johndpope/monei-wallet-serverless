@@ -1,6 +1,7 @@
 const TransferWise = require('../services/transferwise');
 const {getSecretValue} = require('../services/secrets');
 const Cognito = require('../services/cognito');
+const {COUNTRIES} = require('../lib/constants');
 
 const cognito = new Cognito();
 
@@ -27,8 +28,8 @@ exports.handler = async event => {
     return {
       id: account.id,
       accountHolderName: account.accountHolderName,
-      country: account.country,
-      IBAN: account.details.IBAN
+      country: COUNTRIES[account.country],
+      IBAN: account.details.IBAN.replace(/^.{20}/g, '****')
     };
   } catch (error) {
     console.log(JSON.stringify(error, null, 2));

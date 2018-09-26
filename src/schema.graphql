@@ -46,10 +46,10 @@ type Mutation {
         email: String
         note: String
     ): Transaction!
+    newWithdrawal(amount: Int!): Transaction!
     prepareCheckout(amount: Int!): Checkout!
     attachBankAccount(
         accountHolderName: String!
-        country: String!
         IBAN: String!
     ): BankAccount!
     detachBankAccount: DetachBankAccount
