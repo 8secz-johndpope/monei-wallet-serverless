@@ -6,7 +6,7 @@ import Cognito from '../services/cognito';
 
 const cognito = new Cognito();
 
-module.exports.handler = async event => {
+export default async function(event) {
   const amount = (event.arguments.amount / 100).toFixed(2);
   const getCredentials = getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
   const getUser = cognito.getUser(event.identity.claims['phone_number']);
@@ -45,4 +45,4 @@ module.exports.handler = async event => {
     if (error.response) return error.response.data;
     return error;
   }
-};
+}

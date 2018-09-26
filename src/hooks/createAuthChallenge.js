@@ -7,7 +7,7 @@ const authy = authy0(process.env.AUTHY_API_KEY);
 const phoneUtil = PhoneNumberUtil.getInstance();
 const verificationStart = promisify(authy.phones().verification_start);
 
-module.exports.handler = async event => {
+export default async function(event) {
   console.log(JSON.stringify(event, null, 2));
 
   // skip challenge if user has active session
@@ -34,4 +34,4 @@ module.exports.handler = async event => {
     console.log(JSON.stringify(error, null, 2));
     return error.message || 'Something went wrong';
   }
-};
+}

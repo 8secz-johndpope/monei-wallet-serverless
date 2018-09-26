@@ -1,6 +1,6 @@
 import {web3} from '../services/etherium';
 
-module.exports.handler = async data => {
+export default async function(data) {
   // checks transaction receipt form the blockchain
   const receipt = await web3.eth.getTransactionReceipt(data.transactionHash);
 
@@ -12,4 +12,4 @@ module.exports.handler = async data => {
   // forward to the next step
   data.status = 'completed';
   return data;
-};
+}

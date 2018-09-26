@@ -10,7 +10,7 @@ const verificationCheck = promisify(authy.phones().verification_check);
 // tokens stored in the contract as integers, so amount = value * 10 ** decimals
 const FREE_TOKENS_AMOUNT = 200;
 
-module.exports.handler = async event => {
+export default async function(event) {
   console.log(JSON.stringify(event, null, 2));
 
   const user = event.request.userAttributes;
@@ -69,4 +69,4 @@ module.exports.handler = async event => {
     event.response.answerCorrect = false;
     return event;
   }
-};
+}

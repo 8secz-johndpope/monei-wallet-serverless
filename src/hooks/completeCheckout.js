@@ -78,7 +78,7 @@ const savePaymentMethod = async ({username, registrationId}) => {
   return cognito.adminUpdateUserAttributes(params).promise();
 };
 
-module.exports.handler = async event => {
+export default async function(event) {
   console.log(JSON.stringify(event, null, 2));
   const credentials = await getSecretValue(process.env.MONEI_CREDENTIALS_KEY);
   const {resourcePath} = event.queryStringParameters;
@@ -130,4 +130,4 @@ module.exports.handler = async event => {
     console.log(JSON.stringify(error, null, 2));
     return fail(error);
   }
-};
+}

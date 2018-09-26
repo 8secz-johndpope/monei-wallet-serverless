@@ -9,7 +9,7 @@ const stepFunctions = new AWS.StepFunctions();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
 // creates new transaction for a user
-module.exports.handler = async event => {
+export default async function(event) {
   console.log(JSON.stringify(event, null, 2));
   const addressFrom = event.identity.claims['custom:eth_address'];
   const amount = event.arguments.amount;
@@ -124,4 +124,4 @@ module.exports.handler = async event => {
     .promise();
 
   return trx;
-};
+}

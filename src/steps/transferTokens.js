@@ -2,7 +2,7 @@ import {withMasterAccount} from '../services/etherium';
 
 import Transaction from '../models/Transaction';
 
-module.exports.handler = async ({address, amount, note}) => {
+export default async function({address, amount, note}) {
   const {token, masterAddress} = await withMasterAccount();
 
   // create a transaction to transfer tokens
@@ -28,4 +28,4 @@ module.exports.handler = async ({address, amount, note}) => {
       }).then(resolve, reject);
     });
   });
-};
+}

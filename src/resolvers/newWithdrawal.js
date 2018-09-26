@@ -8,7 +8,7 @@ const cognito = new Cognito();
 const stepFunctions = new AWS.StepFunctions();
 
 // creates new transaction for a user
-module.exports.handler = async event => {
+export default async function(event) {
   console.log(JSON.stringify(event, null, 2));
   const amount = event.arguments.amount;
 
@@ -74,4 +74,4 @@ module.exports.handler = async event => {
     .promise();
 
   return trx;
-};
+}

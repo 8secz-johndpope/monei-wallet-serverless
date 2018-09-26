@@ -6,7 +6,7 @@ import Cognito from '../services/cognito';
 const cognito = new Cognito();
 
 // get transferwise account for a user
-module.exports.handler = async event => {
+export default async function(event) {
   console.log(JSON.stringify(event, null, 2));
 
   try {
@@ -33,4 +33,4 @@ module.exports.handler = async event => {
     console.log(JSON.stringify(error, null, 2));
     return error;
   }
-};
+}

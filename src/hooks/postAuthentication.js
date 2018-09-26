@@ -37,7 +37,7 @@ const stepFunctions = new AWS.StepFunctions();
  *
  * @returns {Promise<Object>} - auth event
  */
-module.exports.handler = async event => {
+export default async function(event) {
   console.log(JSON.stringify(event, null, 2));
 
   // skip registration if user already has eth address
@@ -83,4 +83,4 @@ module.exports.handler = async event => {
     .promise();
 
   return event;
-};
+}

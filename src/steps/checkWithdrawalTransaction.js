@@ -2,7 +2,7 @@ import {web3} from '../services/etherium';
 
 import Transaction from '../models/Transaction';
 
-module.exports.handler = async ({transaction, bankAccountId}) => {
+export default async function({transaction, bankAccountId}) {
   const [currentBlock, receipt] = await Promise.all([
     web3.eth.getBlockNumber(),
     web3.eth.getTransactionReceipt(transaction.id)
@@ -17,4 +17,4 @@ module.exports.handler = async ({transaction, bankAccountId}) => {
   const trx = await Transaction.updateFromReceipt(receipt);
 
   return {transaction: trx, bankAccountId};
-};
+}

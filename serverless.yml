@@ -1,8 +1,5 @@
 service: moneiwallet
 
-#package:
-#  artifact: package/package.zip
-
 plugins:
   - serverless-dynamodb-local
   - serverless-offline

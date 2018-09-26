@@ -5,7 +5,7 @@ import Cognito from '../services/cognito';
 
 const cognito = new Cognito();
 
-module.exports.handler = async data => {
+export default async function(data) {
   JSON.stringify(data, null, 2);
 
   try {
@@ -15,4 +15,4 @@ module.exports.handler = async data => {
 
     const client = new TransferWise(options);
   } catch (error) {}
-};
+}

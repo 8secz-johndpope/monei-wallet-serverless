@@ -9,7 +9,7 @@ const iot = new AWS.Iot();
  * @param event
  * @returns {Promise<*>}
  */
-module.exports.handler = async event => {
+export default async function(event) {
   try {
     await iot
       .attachPrincipalPolicy({
@@ -26,4 +26,4 @@ module.exports.handler = async event => {
       return fail(error);
     }
   }
-};
+}

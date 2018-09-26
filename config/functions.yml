@@ -1,39 +1,39 @@
 # Steps
 
 checkTransaction:
-  handler: src/steps/checkTransaction.handler
+  handler: src/steps/checkTransaction.js
   iamRoleStatements:
     - Effect: Allow
       Action: dynamodb:UpdateItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
 checkWithdrawalTransaction:
-  handler: src/steps/checkWithdrawalTransaction.handler
+  handler: src/steps/checkWithdrawalTransaction.js
   iamRoleStatements:
   - Effect: Allow
     Action: dynamodb:UpdateItem
     Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
 checkRequiredBalance:
-  handler: src/steps/checkRequiredBalance.handler
+  handler: src/steps/checkRequiredBalance.js
   iamRoleStatements:
     - Effect: Allow
       Action: secretsmanager:GetSecretValue
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MNEMONIC_KEY}-*"
 
 checkTransactionStatus:
-  handler: src/steps/checkTransactionStatus.handler
+  handler: src/steps/checkTransactionStatus.js
   iamRoleStatements: []
 
 approveTransaction:
-  handler: src/steps/approveTransaction.handler
+  handler: src/steps/approveTransaction.js
   iamRoleStatements:
     - Effect: Allow
       Action: secretsmanager:GetSecretValue
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.ENCRYPT_PASSWORD_KEY}-*"
 
 transferTokens:
-  handler: src/steps/transferTokens.handler
+  handler: src/steps/transferTokens.js
   iamRoleStatements:
     - Effect: Allow
       Action: secretsmanager:GetSecretValue
@@ -43,13 +43,13 @@ transferTokens:
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
 transferFiat:
-  handler: src/steps/transferFiat.handler
+  handler: src/steps/transferFiat.js
   iamRoleStatements: []
 
 # Hooks
 
 postAuthentication:
-  handler: src/hooks/postAuthentication.handler
+  handler: src/hooks/postAuthentication.js
   iamRoleStatements:
     - Effect: Allow
       Action: cognito-idp:AdminUpdateUserAttributes
@@ -62,7 +62,7 @@ postAuthentication:
       Resource: ${self:resources.Outputs.AllowTransferSM.Value}
 
 userSignUp:
-  handler: src/hooks/userSignUp.handler
+  handler: src/hooks/userSignUp.js
   events:
     - http:
         path: signup
@@ -74,19 +74,19 @@ userSignUp:
       Resource: { Fn::GetAtt: ['UserPool', 'Arn'] }
 
 preSignUp:
-  handler: src/hooks/preSignUp.handler
+  handler: src/hooks/preSignUp.js
   iamRoleStatements: []
 
 defineAuthChallenge:
-  handler: src/hooks/defineAuthChallenge.handler
+  handler: src/hooks/defineAuthChallenge.js
   iamRoleStatements: []
 
 createAuthChallenge:
-  handler: src/hooks/createAuthChallenge.handler
+  handler: src/hooks/createAuthChallenge.js
   iamRoleStatements: []
 
 verifyAuthChallenge:
-  handler: src/hooks/verifyAuthChallenge.handler
+  handler: src/hooks/verifyAuthChallenge.js
   iamRoleStatements:
     - Effect: Allow
       Action: cognito-idp:AdminUpdateUserAttributes
@@ -96,7 +96,7 @@ verifyAuthChallenge:
       Resource: ${self:resources.Outputs.TransferTokensSM.Value}
 
 completeCheckout:
-  handler: src/hooks/completeCheckout.handler
+  handler: src/hooks/completeCheckout.js
   events:
   - http:
       path: complete_checkout
@@ -121,7 +121,7 @@ completeCheckout:
     Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
 attachUserPolicy:
-  handler: src/hooks/attachUserPolicy.handler
+  handler: src/hooks/attachUserPolicy.js
   events:
   - http:
       path: attach_policy
@@ -137,7 +137,7 @@ attachUserPolicy:
     Resource: "*"
 
 indexTransactions:
-  handler: src/hooks/indexTransactions.handler
+  handler: src/hooks/indexTransactions.js
   events:
   - stream:
       type: dynamodb
@@ -161,11 +161,11 @@ indexTransactions:
 # Resolvers
 
 getBalance:
-  handler: src/resolvers/getBalance.handler
+  handler: src/resolvers/getBalance.js
   iamRoleStatements: []
 
 newTransaction:
-  handler: src/resolvers/newTransaction.handler
+  handler: src/resolvers/newTransaction.js
   iamRoleStatements:
     - Effect: Allow
       Action: cognito-idp:ListUsers
@@ -181,7 +181,7 @@ newTransaction:
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
 newWithdrawal:
-  handler: src/resolvers/newWithdrawal.handler
+  handler: src/resolvers/newWithdrawal.js
   iamRoleStatements:
   - Effect: Allow
     Action: cognito-idp:AdminGetUser
@@ -197,7 +197,7 @@ newWithdrawal:
     Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.transactionsTable}"
 
 prepareCheckout:
-  handler: src/resolvers/prepareCheckout.handler
+  handler: src/resolvers/prepareCheckout.js
   iamRoleStatements:
     - Effect: Allow
       Action: cognito-idp:AdminGetUser
@@ -207,7 +207,7 @@ prepareCheckout:
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.MONEI_CREDENTIALS_KEY}-*"
 
 attachBankAccount:
-  handler: src/resolvers/attachBankAccount.handler
+  handler: src/resolvers/attachBankAccount.js
   iamRoleStatements:
     - Effect: Allow
       Action: cognito-idp:AdminUpdateUserAttributes
@@ -217,7 +217,7 @@ attachBankAccount:
       Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.TRANSFERWISE_CREDENTIALS_KEY}-*"
 
 getBankAccount:
-  handler: src/resolvers/getBankAccount.handler
+  handler: src/resolvers/getBankAccount.js
   iamRoleStatements:
   - Effect: Allow
     Action: cognito-idp:AdminGetUser
@@ -227,7 +227,7 @@ getBankAccount:
     Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.TRANSFERWISE_CREDENTIALS_KEY}-*"
 
 detachBankAccount:
-  handler: src/resolvers/detachBankAccount.handler
+  handler: src/resolvers/detachBankAccount.js
   iamRoleStatements:
   - Effect: Allow
     Action:

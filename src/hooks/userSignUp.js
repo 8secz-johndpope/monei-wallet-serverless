@@ -5,7 +5,7 @@ import {fail, success} from '../lib/apiUtils';
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const passwordGenerator = new PasswordGenerator();
 
-module.exports.handler = async event => {
+export default async function(event) {
   console.log(JSON.stringify(event, null, 2));
   const {username, name} = JSON.parse(event.body);
 
@@ -28,4 +28,4 @@ module.exports.handler = async event => {
     console.log(JSON.stringify(error, null, 2));
     return fail(error);
   }
-};
+}
