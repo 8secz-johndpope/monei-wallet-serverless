@@ -9,28 +9,23 @@ const cognito = new Cognito();
 exports.handler = async event => {
   console.log(JSON.stringify(event, null, 2));
 
-  try {
-    const user = await cognito.getUser(event.identity.username);
-    console.log(JSON.stringify(user, null, 2));
+  const user = await cognito.getUser(event.identity.username);
+  console.log(JSON.stringify(user, null, 2));
 
-    // exit function if no bank account
-    if (!user.bank_account_id) return null;
+  // exit function if no bank account
+  if (!user.bank_account_id) return null;
 
-    const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
-    const options = JSON.parse(creds);
+  const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
+  const options = JSON.parse(creds);
 
-    const client = new TransferWise(options);
-    const bankAccount = await client.getAccount(user.bank_account_id);
-    console.log(JSON.stringify(bankAccount, null, 2));
+  const client = new TransferWise(options);
+  const bankAccount = await client.getAccount(user.bank_account_id);
+  console.log(JSON.stringify(bankAccount, null, 2));
 
-    return {
-      id: bankAccount.id,
-      accountHolderName: bankAccount.accountHolderName,
-      country: COUNTRIES[bankAccount.country],
-      IBAN: bankAccount.details.IBAN.replace(/^.{20}/g, '****')
-    };
-  } catch (error) {
-    console.log(JSON.stringify(error, null, 2));
-    return error;
-  }
+  return {
+    id: bankAccount.id,
+    accountHolderName: bankAccount.accountHolderName,
+    country: COUNTRIES[bankAccount.country],
+    IBAN: bankAccount.details.IBAN.replace(/^.{20}/g, '****')
+  };
 };

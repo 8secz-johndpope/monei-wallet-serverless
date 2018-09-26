@@ -56,7 +56,7 @@ exports.handler = async event => {
         to: masterAddress,
         toInfo: 'MONEI Coins exchange',
         amount,
-        note: "Transferred to your bank account. You'll receive funds within 24 hours"
+        note: "Transferred to your bank account. You'll receive funds within 5 working days"
       }).then(resolve, reject);
     });
   });
