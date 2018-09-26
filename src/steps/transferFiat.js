@@ -2,7 +2,7 @@ const TransferWise = require('../services/transferwise');
 const {getSecretValue} = require('../services/secrets');
 
 /**
-{
+ {
   "transaction": {
     "createdAt": 1537956636051,
     "updatedAt": 1537956636051,
@@ -19,6 +19,8 @@ const {getSecretValue} = require('../services/secrets');
 }
  */
 
+const TRANSACTION_FEE = 0.6;
+
 exports.handler = async ({transaction, bankAccountId}) => {
   JSON.stringify({transaction, bankAccountId}, null, 2);
 
@@ -30,7 +32,7 @@ exports.handler = async ({transaction, bankAccountId}) => {
     throw new Error('Invalid bank account id');
   }
 
-  const amount = transaction.amount / 100;
+  const amount = transaction.amount / 100 + TRANSACTION_FEE;
   const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
   const options = JSON.parse(creds);
 
