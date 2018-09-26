@@ -15,7 +15,7 @@ definition:
       - Variable: "$.transaction.status"
         StringEquals: completed
         Next: TransferFiatState
-      - Default: EndState
+      Default: EndState
     WaitTransactionState:
       Type: Wait
       Seconds: 30
