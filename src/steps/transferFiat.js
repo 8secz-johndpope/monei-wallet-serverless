@@ -1,15 +1,12 @@
 const TransferWise = require('../services/transferwise');
 const {getSecretValue} = require('../services/secrets');
-const Cognito = require('../services/cognito');
-
-const cognito = new Cognito();
 
 /**
 {
   "transaction": {
     "createdAt": 1537956636051,
     "updatedAt": 1537956636051,
-    "status": "pending",
+    "status": "completed",
     "id": "0x91d34fc00971be420b2522e82edc865abb00a70140d9eb0a222331fddefdb480",
     "from": "0xaA8bdEe6C688c2dA8c3A15397c20CD116e482e73",
     "fromInfo": "0xaA8bdEe6C688c2dA8c3A15397c20CD116e482e73",
@@ -23,7 +20,7 @@ const cognito = new Cognito();
  */
 
 exports.handler = async ({transaction, bankAccountId}) => {
-  JSON.stringify(data, null, 2);
+  JSON.stringify({transaction, bankAccountId}, null, 2);
 
   if (!transaction || !transaction.amount) {
     throw new Error('Invalid transaction');
