@@ -44,7 +44,10 @@ transferTokens:
 
 transferFiat:
   handler: src/steps/transferFiat.handler
-  iamRoleStatements: []
+  iamRoleStatements:
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:${self:custom.config.TRANSFERWISE_CREDENTIALS_KEY}-*"
 
 # Hooks
 
