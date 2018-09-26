@@ -30,17 +30,12 @@ exports.handler = async ({transaction, bankAccountId}) => {
     throw new Error('Invalid bank account id');
   }
 
-  try {
-    const amount = transaction.amount / 100;
-    const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
-    const options = JSON.parse(creds);
+  const amount = transaction.amount / 100;
+  const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
+  const options = JSON.parse(creds);
 
-    const client = new TransferWise(options);
-    const result = await client.transfer({targetAccount: bankAccountId, amount});
-    JSON.stringify(result, null, 2);
-    return result;
-  } catch (error) {
-    JSON.stringify(error, null, 2);
-    return error;
-  }
+  const client = new TransferWise(options);
+  const result = await client.transfer({targetAccount: bankAccountId, amount});
+  JSON.stringify(result, null, 2);
+  return result;
 };
