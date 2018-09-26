@@ -6,11 +6,11 @@ definition:
     ChoiceState:
       Type: Choice
       Choices:
-      - Variable: "$.status"
+      - Variable: "$.transaction.status"
         StringEquals: pending
         Next: WaitTransactionState
       - Not:
-          Variable: "$.status"
+          Variable: "$.transaction.status"
           StringEquals: pending
         Next: TransferFiatState
     WaitTransactionState:
