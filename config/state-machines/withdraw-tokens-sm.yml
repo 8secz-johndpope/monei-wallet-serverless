@@ -6,13 +6,16 @@ definition:
     ChoiceState:
       Type: Choice
       Choices:
-      - Variable: "$.transaction.status"
-        StringEquals: pending
-        Next: WaitTransactionState
-      - Not:
-          Variable: "$.transaction.status"
+      - Or:
+        - Variable: "$.transaction.status"
           StringEquals: pending
+        - Variable: "$.confirmations"
+          NumericLessThan: 10
+        Next: WaitTransactionState
+      - Variable: "$.transaction.status"
+        StringEquals: completed
         Next: TransferFiatState
+      - Default: EndState
     WaitTransactionState:
       Type: Wait
       Seconds: 30
@@ -24,4 +27,7 @@ definition:
     TransferFiatState:
       Type: Task
       Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-transferFiat"
+      End: true
+    EndState:
+      Type: Pass
       End: true
