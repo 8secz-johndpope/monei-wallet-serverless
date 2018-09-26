@@ -22,14 +22,28 @@ const cognito = new Cognito();
 }
  */
 
-exports.handler = async data => {
+exports.handler = async ({transaction, bankAccountId}) => {
   JSON.stringify(data, null, 2);
 
+  if (!transaction || !transaction.amount) {
+    throw new Error('Invalid transaction');
+  }
+
+  if (!bankAccountId) {
+    throw new Error('Invalid bank account id');
+  }
+
   try {
-    const amount = data.amount / 100;
+    const amount = transaction.amount / 100;
     const creds = await getSecretValue(process.env.TRANSFERWISE_CREDENTIALS_KEY);
     const options = JSON.parse(creds);
 
     const client = new TransferWise(options);
-  } catch (error) {}
+    const result = await client.transfer({targetAccount: bankAccountId, amount});
+    JSON.stringify(result, null, 2);
+    return result;
+  } catch (error) {
+    JSON.stringify(error, null, 2);
+    return error;
+  }
 };
